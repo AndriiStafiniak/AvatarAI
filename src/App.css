@@ -17,6 +17,14 @@ body, #root {
   text-align: center;
 }
 
+div.scene-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
