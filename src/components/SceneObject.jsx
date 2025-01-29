@@ -22,6 +22,4 @@ export function SceneObject({ actions, objects, currentAction }) {
       />
     </group>
   )
-}
-
-useGLTF.preload('/reception_desk.glb') 
+} 

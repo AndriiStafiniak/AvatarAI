@@ -12,11 +12,21 @@ const AVATAR_ID = '9ff38f44-437d-11ef-9187-42010a7be011'
 
 function App() {
   const [currentAction, setCurrentAction] = useState('');
+  const [isAvatarLoaded, setIsAvatarLoaded] = useState(false);
+
+  const handleAvatarLoaded = () => {
+    setIsAvatarLoaded(true);
+  };
 
   return (
     <div className="app-container">
       <ConvaiContext.Provider value={{ currentAction, setCurrentAction }}>
         <div className="scene-container">
+          {!isAvatarLoaded && (
+            <div className="loading-overlay">
+              <LoadingSpinner progress={70} />
+            </div>
+          )}
           <Canvas 
             shadows 
             camera={{ position: [0, 1.5, 3], fov: 50 }}
@@ -42,9 +52,13 @@ function App() {
             <OrbitControls />
             
             {/* Avatar i cienie */}
-            <Suspense fallback={<LoadingSpinner progress={50} />}>
+            <Suspense>
               <group position={[0, -1, 0]}>
-                <ConvaiAvatar castShadow receiveShadow />
+                <ConvaiAvatar 
+                  castShadow 
+                  receiveShadow 
+                  onLoad={handleAvatarLoaded}
+                />
                 <SceneObject currentAction={currentAction} />
                 <mesh 
                   rotation-x={-Math.PI / 2} 
@@ -57,7 +71,7 @@ function App() {
               </group>
             </Suspense>
           </Canvas>
-          <ChatInterface characterId={AVATAR_ID} />
+          {isAvatarLoaded && <ChatInterface characterId={AVATAR_ID} />}
         </div>
       </ConvaiContext.Provider>
     </div>

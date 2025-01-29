@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import Draggable from 'react-draggable'
 import './ChatInterface.css'
+import { MdMic, MdMicOff, MdSend } from 'react-icons/md'
 
 const API_KEY = '2d12bd421e3af7ce47223bce45944908'
 const CHAT_API_URL = 'https://api.convai.com/character/getResponse'
@@ -17,6 +18,11 @@ export function ChatInterface({ characterId }) {
   const sessionId = useRef('-1')
   const chatContainerRef = useRef(null)
   const nodeRef = useRef(null)
+  const [isRecording, setIsRecording] = useState(false)
+  const mediaRecorderRef = useRef(null)
+  const audioChunksRef = useRef([])
+  const [micPermission, setMicPermission] = useState(false)
+  const [micError, setMicError] = useState(null)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -25,6 +31,30 @@ export function ChatInterface({ characterId }) {
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  useEffect(() => {
+    // Sprawdź czy przeglądarka wspiera nagrywanie
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setMicError('Twoja przeglądarka nie wspiera nagrywania audio. Użyj nowszej przeglądarki.')
+      setMicPermission(false)
+      return
+    }
+
+    checkMicrophonePermission()
+  }, [])
+
+  const checkMicrophonePermission = async () => {
+    try {
+      const result = await navigator.permissions.query({ name: 'microphone' })
+      if (result.state === 'granted') {
+        setMicPermission(true)
+      } else {
+        setMicPermission(false)
+      }
+    } catch (error) {
+      console.error('Error checking microphone permission:', error)
+    }
+  }
 
   const sendMessage = async (e) => {
     e?.preventDefault()
@@ -145,21 +175,133 @@ export function ChatInterface({ characterId }) {
     sendMessage()
   }
 
+  const startRecording = async () => {
+    try {
+      setMicError(null)
+      
+      // Dodatkowe sprawdzenie przed próbą nagrywania
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error('Twoja przeglądarka nie wspiera nagrywania audio')
+      }
+
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          sampleRate: 44100
+        },
+        video: false
+      })
+      
+      setMicPermission(true)
+      mediaRecorderRef.current = new MediaRecorder(stream, {
+        mimeType: 'audio/webm'
+      })
+      audioChunksRef.current = []
+
+      mediaRecorderRef.current.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data)
+        }
+      }
+
+      mediaRecorderRef.current.onstop = async () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' })
+        await sendAudioMessage(audioBlob)
+      }
+
+      mediaRecorderRef.current.start()
+      setIsRecording(true)
+    } catch (error) {
+      console.error('Error accessing microphone:', error)
+      setMicPermission(false)
+      
+      if (error.name === 'NotFoundError') {
+        setMicError('error 😥')
+      } else if (error.name === 'NotAllowedError') {
+        setMicError('Dostęp do mikrofonu został zablokowany. Zezwól na dostęp w ustawieniach przeglądarki.')
+      } else if (error.message === 'Twoja przeglądarka nie wspiera nagrywania audio') {
+        setMicError(error.message)
+      } else {
+        setMicError('Wystąpił błąd podczas dostępu do mikrofonu. Spróbuj ponownie.')
+      }
+    }
+  }
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop()
+      setIsRecording(false)
+      mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop())
+    }
+  }
+
+  const sendAudioMessage = async (audioBlob) => {
+    setIsTyping(true)
+    
+    const formData = new FormData()
+    formData.append('file', audioBlob, 'audio.webm')
+    formData.append('charID', characterId)
+    formData.append('sessionID', sessionId.current)
+    formData.append('voiceResponse', 'True')
+
+    try {
+      const response = await fetch(CHAT_API_URL, {
+        method: 'POST',
+        headers: {
+          'CONVAI-API-KEY': API_KEY,
+        },
+        body: formData
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      
+      if (data.text) {
+        const botMessage = {
+          text: data.text,
+          sender: 'bot',
+          audio: data.audio
+        }
+
+        setMessages(prev => [...prev, botMessage])
+        
+        if (data.audio) {
+          const audioData = atob(data.audio)
+          const arrayBuffer = new ArrayBuffer(audioData.length)
+          const view = new Uint8Array(arrayBuffer)
+          for (let i = 0; i < audioData.length; i++) {
+            view[i] = audioData.charCodeAt(i)
+          }
+          const blob = new Blob([arrayBuffer], { type: 'audio/webm' })
+          const url = URL.createObjectURL(blob)
+          audioRef.current.src = url
+          audioRef.current.play()
+        }
+      }
+    } catch (error) {
+      console.error('Error sending audio:', error)
+      setMessages(prev => [...prev, {
+        text: 'Przepraszam, wystąpił błąd w przetwarzaniu audio.',
+        sender: 'bot',
+        error: true
+      }])
+    } finally {
+      setIsTyping(false)
+    }
+  }
+
   return (
-    <Draggable 
-      nodeRef={nodeRef}
-      handle=".chat-header"
-      bounds="body"
-    >
+    <Draggable nodeRef={nodeRef} handle=".chat-header" bounds="body">
       <div ref={nodeRef} className="chat-interface">
         <div className="chat-header">
           <span>Chat</span>
           <div className="drag-handle">⋮⋮</div>
         </div>
-        <div 
-          ref={chatContainerRef}
-          className="chat-messages"
-        >
+        <div ref={chatContainerRef} className="chat-messages">
           {messages.map((msg, index) => (
             <div 
               key={index} 
@@ -179,18 +321,33 @@ export function ChatInterface({ characterId }) {
           )}
           <div ref={messagesEndRef} />
         </div>
-        <form onSubmit={sendMessage} className="chat-input-form">
-          <input
-            type="text"
-            value={inputMessage}
-            onChange={(e) => setInputMessage(e.target.value)}
-            placeholder="Napisz wiadomość..."
-            className="chat-input"
-          />
-          <button type="submit" className="chat-send-button">
-            Wyślij
-          </button>
-        </form>
+        <div className="chat-controls">
+          <div className="mic-container">
+            <button
+              type="button"
+              className={`mic-button ${isRecording ? 'recording' : ''} ${micError ? 'error' : ''}`}
+              onMouseDown={startRecording}
+              onMouseUp={stopRecording}
+              onMouseLeave={stopRecording}
+              title={micError || (micPermission ? 'Naciśnij i przytrzymaj aby nagrywać' : 'Kliknij aby włączyć mikrofon')}
+            >
+              {isRecording ? <MdMicOff /> : <MdMic />}
+            </button>
+            {micError && <div className="mic-error">{micError}</div>}
+          </div>
+          <form onSubmit={sendMessage} className="chat-input-form">
+            <input
+              type="text"
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              placeholder="Napisz wiadomość..."
+              className="chat-input"
+            />
+            <button type="submit" className="chat-send-button" title="Wyślij">
+              <MdSend />
+            </button>
+          </form>
+        </div>
       </div>
     </Draggable>
   )
