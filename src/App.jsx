@@ -30,6 +30,11 @@ function App() {
           <Canvas 
             shadows 
             camera={{ position: [0, 1.5, 3], fov: 50 }}
+            onCreated={({ gl }) => {
+              gl.domElement.addEventListener('webglcontextlost', (e) => {
+                console.error('WebGL Context Lost:', e);
+              });
+            }}
           >
             <color attach="background" args={['#808080']} />
             
