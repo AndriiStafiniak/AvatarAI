@@ -9,7 +9,7 @@ export function SceneObject({ actions, objects, currentAction }) {
   const safeObjects = objects || []
   const safeCurrentAction = currentAction || ''
   
-  const { scene: gltfScene } = useGLTF('/reception_desk.glb')
+  const { scene: gltfScene } = useGLTF('./models/reception_desk.glb')
   const clone = useMemo(() => SkeletonUtils.clone(gltfScene), [gltfScene])
 
   return (

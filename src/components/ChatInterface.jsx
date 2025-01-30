@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import Draggable from 'react-draggable'
 import './ChatInterface.css'
-import { MdMic, MdMicOff, MdSend } from 'react-icons/md'
+import { MdMic, MdMicOff, MdSend, MdRefresh } from 'react-icons/md'
 import { ConvaiClient } from 'convai-web-sdk'
 
 const DEFAULT_QUESTION = "Cześć! Jak się masz?"
@@ -167,12 +167,104 @@ export function ChatInterface({ characterId }) {
     scrollToBottom()
   }, [messages])
 
+  const handleRefresh = async () => {
+    setMessages([])
+    setInputMessage('')
+    setIsTyping(false)
+    setShowStarterQuestion(true)
+    setMicError(null)
+    
+    // Reinitialize Convai client
+    if (convaiClient.current) {
+      if (typeof convaiClient.current.destroy === 'function') {
+        convaiClient.current.destroy()
+      } else if (typeof convaiClient.current.close === 'function') {
+        convaiClient.current.close()
+      }
+      convaiClient.current = null
+    }
+    
+    // Initialize new client
+    const initClient = async () => {
+      try {
+        const initializedClient = new ConvaiClient({
+          apiKey: '2d12bd421e3af7ce47223bce45944908',
+          characterId: characterId,
+          enableAudio: true,
+          sessionId: '-1',
+          disableAudioGeneration: false
+        })
+        
+        if (initializedClient.audioContext) {
+          try {
+            await new Promise(resolve => setTimeout(resolve, 100))
+            await initializedClient.audioContext.resume()
+          } catch (audioError) {
+            console.error('Audio Context Error:', audioError)
+            setMicError('Wymagane zezwolenie na dźwięk - kliknij gdziekolwiek na stronie')
+          }
+        }
+        
+        convaiClient.current = initializedClient
+
+        // Setup response callback
+        convaiClient.current.setResponseCallback((response) => {
+          if (response.hasUserQuery()) {
+            const transcript = response.getUserQuery()
+            if (transcript.getIsFinal()) {
+              finalizedUserText.current += " " + transcript.getTextData()
+              setMessages(prev => [...prev, {
+                text: finalizedUserText.current,
+                sender: 'user'
+              }])
+            }
+          }
+          
+          if (response.hasAudioResponse()) {
+            const audioResponse = response.getAudioResponse()
+            npcTextRef.current = audioResponse.getTextData()
+            setIsTyping(false)
+            
+            setMessages(prev => [...prev, {
+              text: npcTextRef.current,
+              sender: 'bot',
+              audio: audioResponse.getAudioData()
+            }])
+          }
+        })
+
+        // Setup audio handlers
+        convaiClient.current.onAudioPlay(() => {
+          window.dispatchEvent(new Event('avatar-talking-start'))
+        })
+
+        convaiClient.current.onAudioStop(() => {
+          window.dispatchEvent(new Event('avatar-talking-end'))
+        })
+      } catch (error) {
+        console.error('Init error:', error)
+        setMicError('Błąd inicjalizacji czatu głosowego')
+      }
+    }
+    
+    await initClient()
+  }
+
   return (
     <Draggable nodeRef={nodeRef} handle=".chat-header" bounds="body">
       <div ref={nodeRef} className="chat-interface">
         <div className="chat-header">
           <span>Chat</span>
-          <div className="drag-handle">⋮⋮</div>
+          <div className="header-controls">
+            <button 
+              className="refresh-button" 
+              onClick={handleRefresh}
+              title="Odśwież czat"
+            >
+              <MdRefresh />
+            </button>
+            <div className="drag-handle">⋮⋮</div>
+          </div>
         </div>
         <div ref={chatContainerRef} className="chat-messages">
           {messages.map((msg, index) => (

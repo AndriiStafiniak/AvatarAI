@@ -267,4 +267,28 @@
 
 .mic-button.error:hover {
   color: #bd2130;
+}
+
+.header-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.refresh-button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  transition: all 0.2s;
+}
+
+.refresh-button:hover {
+  opacity: 1;
+  transform: rotate(180deg);
 } 
