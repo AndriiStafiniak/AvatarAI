@@ -49,7 +49,7 @@ function App() {
 
   return (
     <div className="app-container">
-      <Leva hidden={false} />
+      <Leva hidden={true} />
       <ConvaiContext.Provider value={{ currentAction, setCurrentAction }}>
         <div className="scene-container">
           {!isAvatarLoaded && (
