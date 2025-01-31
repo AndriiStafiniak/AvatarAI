@@ -60,7 +60,7 @@ function App() {
           <Scene3DErrorBoundary>
             <Canvas 
               shadows 
-              camera={{ position: [0, 0.5, 3], fov: 75 }}
+              camera={{ position: [0, 0.5, 3], fov: 55 }}
               onCreated={({ gl }) => {
                 gl.domElement.addEventListener('webglcontextlost', (e) => {
                   e.preventDefault();
