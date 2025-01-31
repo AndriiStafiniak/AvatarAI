@@ -53,7 +53,7 @@ export function Zegar() {
 
   const { position, rotationY, scale } = useControls('Zegar', {
     position: {
-      value: [-0.5, 2, -4.9],
+      value: [-0.8, 2, -4.9],
       step: 0.1,
     },
     rotationY: {

@@ -1,5 +1,5 @@
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Environment } from '@react-three/drei'
+import { OrbitControls, Environment, PresentationControls } from '@react-three/drei'
 import { ConvaiAvatar } from './ConvaiAvatar'
 import { ChatInterface } from './components/ChatInterface'
 import { Suspense, useState, Component } from 'react'
@@ -11,8 +11,9 @@ import { Floor } from './components/Floor'
 import { Wall } from './components/Wall'
 import { Tv } from './components/Tv'
 import { Zegar } from './components/Zegar'
+import { Leva } from 'leva'
 
-const AVATAR_ID = '9ff38f44-437d-11ef-9187-42010a7be011'
+const AVATAR_ID = '881e4aac-50d5-11ef-9461-42010a7be011'
 
 // Dodaj klasę ErrorBoundary
 class Scene3DErrorBoundary extends Component {
@@ -48,6 +49,7 @@ function App() {
 
   return (
     <div className="app-container">
+      <Leva hidden={false} />
       <ConvaiContext.Provider value={{ currentAction, setCurrentAction }}>
         <div className="scene-container">
           {!isAvatarLoaded && (
@@ -58,7 +60,7 @@ function App() {
           <Scene3DErrorBoundary>
             <Canvas 
               shadows 
-              camera={{ position: [0, 1.5, 3], fov: 50 }}
+              camera={{ position: [0, 0.5, 3], fov: 75 }}
               onCreated={({ gl }) => {
                 gl.domElement.addEventListener('webglcontextlost', (e) => {
                   e.preventDefault();
@@ -75,39 +77,45 @@ function App() {
                 backgroundBlurriness={0.5}
               />
               
-              {/* Światła */}
-              <ambientLight intensity={0.7} />
-              <directionalLight
-                position={[5, 5, 5]}
-                intensity={0.5}
-                castShadow
-                shadow-mapSize={[1024, 1024]}
-                shadow-camera-far={20}
-                shadow-camera-near={0.1}
-                shadow-camera-top={10}
-                shadow-camera-bottom={-10}
-                shadow-camera-left={-10}
-                shadow-camera-right={10}
-              />
-              
-              {/* Kontrolki */}
-              <OrbitControls />
-              
-              {/* Avatar i cienie */}
-              <Suspense fallback={null}>
-                <group position={[0, -1, 0]}>
-                  <ConvaiAvatar 
-                    castShadow 
-                    receiveShadow 
-                    onLoad={handleAvatarLoaded}
-                  />
-                  <SceneObject currentAction={currentAction} />
-                  <Floor />
-                  <Wall />
-                  <Tv />
-                  <Zegar />
-                </group>
-              </Suspense>
+              <PresentationControls
+                global
+                position={[0, -0.5, 0]}
+                rotation={[0, 0, 0]}
+                polar={[0, 0.2]}
+                azimuth={[-0.2, 0.2]}
+                config={{ mass: 2, tension: 400 }}
+                snap={{ mass: 3, tension: 200 }}
+                touch-action="auto"
+              >
+                <ambientLight intensity={0.7} />
+                <directionalLight
+                  position={[5, 5, 5]}
+                  intensity={0.5}
+                  castShadow
+                  shadow-mapSize={[1024, 1024]}
+                  shadow-camera-far={25}
+                  shadow-camera-near={0.1}
+                  shadow-camera-top={10}
+                  shadow-camera-bottom={-10}
+                  shadow-camera-left={-10}
+                  shadow-camera-right={10}
+                />
+                <Suspense fallback={null}>
+                  <group position={[0, -1, 0]}>
+                    <ConvaiAvatar 
+                      castShadow 
+                      receiveShadow 
+                      onLoad={handleAvatarLoaded}
+                    />
+                    <SceneObject currentAction={currentAction} />
+                    <Floor />
+                    <Wall />
+                    <Tv />
+                    <Zegar />
+                  </group>
+                </Suspense>
+              </PresentationControls>
+              {/* <OrbitControls /> */}
             </Canvas>
           </Scene3DErrorBoundary>
           {isAvatarLoaded && <ChatInterface characterId={AVATAR_ID} />}
