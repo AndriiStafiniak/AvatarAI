@@ -34,20 +34,19 @@ export function Zegar() {
     const minuteDegrees = ((minutes + seconds / 60) / 60) * 360
     const hourDegrees = ((hours % 12 + minutes / 60) / 12) * 360
 
-    // Konwertujemy stopnie na radiany i dodajemy offset dla orientacji zegara
-    const offsetDegrees = 90 // offset 90 stopni, bo w Three.js 0 stopni to "wschód"
-    const toRadians = (degrees) => (degrees + offsetDegrees) * (Math.PI / 180)
+    // Poprawiona konwersja stopni na radiany
+    const toRadians = (degrees) => degrees * (-Math.PI / 180)
 
-    // Ustawiamy rotację wskazówek
+    // Ustawiamy rotację wskazówek (usunięto negację i offset)
     if (secondHand.current) {
-      secondHand.current.rotation.x = -toRadians(secondDegrees)
+      secondHand.current.rotation.x = toRadians(secondDegrees)
       secondHand.current.visible = true
     }
     if (minuteHand.current) {
-      minuteHand.current.rotation.x = -toRadians(minuteDegrees)
+      minuteHand.current.rotation.x = toRadians(minuteDegrees)
     }
     if (hourHand.current) {
-      hourHand.current.rotation.x = -toRadians(hourDegrees)
+      hourHand.current.rotation.x = toRadians(hourDegrees)
     }
   })
 
