@@ -81,7 +81,7 @@ function App() {
                 global
                 position={[0, -0.5, 0]}
                 rotation={[0, 0, 0]}
-                polar={[0, 0.2]}
+                polar={[-0.2, 0.2]}
                 azimuth={[-0.2, 0.2]}
                 config={{ mass: 2, tension: 400 }}
                 snap={{ mass: 3, tension: 200 }}
@@ -115,7 +115,7 @@ function App() {
                   </group>
                 </Suspense>
               </PresentationControls>
-              <OrbitControls />
+              {/* <OrbitControls /> */}
             </Canvas>
           </Scene3DErrorBoundary>
           {isAvatarLoaded && <ChatInterface characterId={AVATAR_ID} />}

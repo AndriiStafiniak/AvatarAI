@@ -108,20 +108,15 @@ export function Tv() {
     video.loop = true
     video.muted = true
     video.playsInline = true
-    video.preload = 'auto' // Dodajemy preload
-
-    // Nowe event listeners dla lepszego śledzenia
-    video.addEventListener('loadedmetadata', () => console.log('Video metadata loaded'))
-    video.addEventListener('canplay', () => console.log('Video can play'))
-    video.addEventListener('playing', () => console.log('Video started playing'))
+    video.preload = 'auto'
 
     // Tworzenie tekstury z video
     const videoTexture = new THREE.VideoTexture(video)
     videoTexture.needsUpdate = true
     
-    // Dodajemy korektę odwrócenia osi X
-    videoTexture.repeat.x = -1 // Odwracamy teksturę w poziomie
-    videoTexture.offset.x = 1  // Kompensujemy przesunięcie
+    // Korekta odwrócenia osi X
+    videoTexture.repeat.x = -1
+    videoTexture.offset.x = 1
     videoTexture.wrapS = THREE.RepeatWrapping
 
     // Proste ustawienia materiału
@@ -131,19 +126,16 @@ export function Tv() {
       toneMapped: false,
     })
 
-    // Natychmiastowe przypisanie materiału
+    // Przypisanie materiału
     screen.material = material
     materialRef.current = material
 
-    // Automatyczne odtwarzanie z obsługą błędów
+    // Automatyczne odtwarzanie
     const playVideo = () => {
-      video.play()
-        .then(() => console.log('Video playing successfully'))
-        .catch(error => console.error('Error playing video:', error))
+      video.play().catch(error => {})
     }
 
-    // Rozpocznij odtwarzanie gdy tylko możliwe
-    if (video.readyState >= 3) { // HAVE_FUTURE_DATA
+    if (video.readyState >= 3) {
       playVideo()
     } else {
       video.addEventListener('loadeddata', playVideo, { once: true })
@@ -162,14 +154,12 @@ export function Tv() {
   // Dodaj handler do ponownego uruchomienia video w razie utraty kontekstu
   useEffect(() => {
     const handleContextLost = () => {
-      console.log('WebGL context lost - attempting to recover')
       if (videoRef.current) {
         videoRef.current.play().catch(console.error)
       }
     }
 
     const handleContextRestored = () => {
-      console.log('WebGL context restored')
       if (materialRef.current) {
         materialRef.current.map.needsUpdate = true
       }
