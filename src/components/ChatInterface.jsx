@@ -16,11 +16,19 @@ export function ChatInterface({ characterId }) {
   const nodeRef = useRef(null)
   const [micError, setMicError] = useState(null)
   const [isRecording, setIsRecording] = useState(false)
+  const [isLiveMode, setIsLiveMode] = useState(false)
+  const [audioStream, setAudioStream] = useState(null)
+  const audioAnalyser = useRef(null)
+  const silenceTimer = useRef(null)
   
   // Convai Client refs
   const convaiClient = useRef(null)
   const finalizedUserText = useRef("")
   const npcTextRef = useRef("")
+
+  // Dodaj nowe stałe (można dostosować wartości)
+  const SILENCE_THRESHOLD = -45 // dB
+  const SILENCE_DELAY = 1500 // ms
 
   useEffect(() => {
     let initializedClient = null
@@ -100,35 +108,73 @@ export function ChatInterface({ characterId }) {
     }
   }, [characterId])
 
-  const handleStartRecording = async () => {
+  const handleMicClick = async () => {
     try {
-      if (!navigator.mediaDevices?.getUserMedia) {
-        throw new Error('Twoja przeglądarka nie wspiera nagrywania głosu')
-      }
+      if (!isLiveMode) {
+        // Rozpocznij nasłuchiwanie
+        if (!navigator.mediaDevices?.getUserMedia) {
+          throw new Error('Twoja przeglądarka nie wspiera nagrywania głosu')
+        }
 
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      stream.getTracks().forEach(track => track.stop())
-      
-      if (!convaiClient.current) {
-        await initClient()
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+        setAudioStream(stream)
+        
+        // Inicjalizacja analizatora audio
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)()
+        const analyser = audioContext.createAnalyser()
+        analyser.fftSize = 512
+        audioAnalyser.current = analyser
+        
+        const source = audioContext.createMediaStreamSource(stream)
+        source.connect(analyser)
+        
+        setIsLiveMode(true)
+        setMicError(null)
+        finalizedUserText.current = ""
+        await convaiClient.current.startAudioChunk()
+        
+        // Rozpocznij monitorowanie poziomu dźwięku
+        checkAudioLevel()
+      } else {
+        // Zatrzymaj nasłuchiwanie
+        stopListening()
       }
-      
-      await new Promise(resolve => setTimeout(resolve, 50))
-      
-      setIsRecording(true)
-      finalizedUserText.current = ""
-      await convaiClient.current.startAudioChunk()
     } catch (error) {
       console.error('Microphone error:', error)
       setMicError(error.message || 'Błąd dostępu do mikrofonu')
-      setIsRecording(false)
+      setIsLiveMode(false)
     }
   }
 
-  const handleStopRecording = async () => {
+  const checkAudioLevel = () => {
+    if (!isLiveMode) return
+
+    const dataArray = new Uint8Array(audioAnalyser.current.frequencyBinCount)
+    audioAnalyser.current.getByteFrequencyData(dataArray)
+    
+    const average = dataArray.reduce((a, b) => a + b) / dataArray.length
+    const dB = 20 * Math.log10(average / 255)
+
+    if (dB > SILENCE_THRESHOLD) {
+      // Dźwięk wykryty - zresetuj timer
+      if (silenceTimer.current) clearTimeout(silenceTimer.current)
+      silenceTimer.current = setTimeout(() => {
+        stopListening()
+      }, SILENCE_DELAY)
+    }
+
+    requestAnimationFrame(checkAudioLevel)
+  }
+
+  const stopListening = async () => {
+    if (silenceTimer.current) clearTimeout(silenceTimer.current)
+    if (audioStream) {
+      audioStream.getTracks().forEach(track => track.stop())
+    }
+    setIsLiveMode(false)
+    setIsTyping(true)
+    
     try {
-      setIsRecording(false)
-      setIsTyping(true)
       if (convaiClient.current) {
         await convaiClient.current.endAudioChunk()
       }
@@ -290,13 +336,11 @@ export function ChatInterface({ characterId }) {
           <div className="mic-container">
             <button
               type="button"
-              className={`mic-button ${isRecording ? 'recording' : ''} ${micError ? 'error' : ''}`}
-              onMouseDown={handleStartRecording}
-              onMouseUp={handleStopRecording}
-              onMouseLeave={handleStopRecording}
-              title={micError || 'Naciśnij i przytrzymaj aby nagrywać'}
+              className={`mic-button ${isLiveMode ? 'recording' : ''} ${micError ? 'error' : ''}`}
+              onClick={handleMicClick}
+              title={micError || (isLiveMode ? 'Kliknij aby zakończyć' : 'Kliknij aby rozpocząć rozmowę')}
             >
-              {isRecording ? <MdMicOff /> : <MdMic />}
+              {isLiveMode ? <MdMicOff /> : <MdMic />}
             </button>
             {micError && <div className="mic-error">{micError}</div>}
           </div>
