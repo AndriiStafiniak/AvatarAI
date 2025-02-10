@@ -49,7 +49,7 @@ function App() {
 
   return (
     <div className="app-container">
-      <Leva hidden={true} />
+      <Leva hidden={false} />
       <ConvaiContext.Provider value={{ currentAction, setCurrentAction }}>
         <div className="scene-container">
           {!isAvatarLoaded && (
@@ -115,7 +115,7 @@ function App() {
                   </group>
                 </Suspense>
               </PresentationControls>
-              {/* <OrbitControls /> */}
+              <OrbitControls />
             </Canvas>
           </Scene3DErrorBoundary>
           {isAvatarLoaded && <ChatInterface characterId={AVATAR_ID} />}
