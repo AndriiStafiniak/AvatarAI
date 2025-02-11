@@ -1,43 +1,60 @@
+import React, { Suspense, useEffect, useRef, useCallback } from 'react'
 import { useGLTF } from '@react-three/drei'
 import { useControls } from 'leva'
-import { Suspense, useEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
-export function Zegar() {
-  const { scene } = useGLTF('./models/Zegar.glb')
+// Optymalizacja komponentu zegara z React.memo
+export const Zegar = React.memo(() => {
+  const { scene } = useGLTF('./models/Zegar.glb', {
+    draco: true,
+    meshOptimizer: true
+  })
+  
   const secondHand = useRef()
   const minuteHand = useRef()
   const hourHand = useRef()
 
-  // Znajdź wskazówki w modelu
-  useEffect(() => {
-    secondHand.current = scene.getObjectByName('sekundy')
-    minuteHand.current = scene.getObjectByName('Minuty')
-    hourHand.current = scene.getObjectByName('Godziny')
+  // Inicjalizacja wskazówek
+  const initializeHands = useCallback(() => {
+    try {
+      secondHand.current = scene.getObjectByName('sekundy')
+      minuteHand.current = scene.getObjectByName('Minuty')
+      hourHand.current = scene.getObjectByName('Godziny')
 
-    if (secondHand.current) {
-      secondHand.current.visible = true
-      secondHand.current.renderOrder = 1
+      if (secondHand.current) {
+        secondHand.current.visible = true
+        secondHand.current.renderOrder = 1
+      }
+    } catch (error) {
+      console.error('Error initializing clock hands:', error)
     }
   }, [scene])
 
-  // Animuj wskazówki
-  useFrame(() => {
+  useEffect(() => {
+    initializeHands()
+    
+    return () => {
+      // Cleanup dla referencji
+      secondHand.current = null
+      minuteHand.current = null
+      hourHand.current = null
+    }
+  }, [initializeHands])
+
+  // Optymalizacja animacji wskazówek
+  const updateClockHands = useCallback(() => {
     const now = new Date()
     const seconds = now.getSeconds()
     const minutes = now.getMinutes()
     const hours = now.getHours()
 
-    // Obliczamy kąty tak jak w przykładzie HTML
     const secondDegrees = (seconds / 60) * 360
     const minuteDegrees = ((minutes + seconds / 60) / 60) * 360
     const hourDegrees = ((hours % 12 + minutes / 60) / 12) * 360
 
-    // Poprawiona konwersja stopni na radiany
     const toRadians = (degrees) => degrees * (-Math.PI / 180)
 
-    // Ustawiamy rotację wskazówek (usunięto negację i offset)
     if (secondHand.current) {
       secondHand.current.rotation.x = toRadians(secondDegrees)
       secondHand.current.visible = true
@@ -48,7 +65,9 @@ export function Zegar() {
     if (hourHand.current) {
       hourHand.current.rotation.x = toRadians(hourDegrees)
     }
-  })
+  }, [])
+
+  useFrame(updateClockHands)
 
   const { position, rotationY, scale } = useControls('Zegar', {
     position: {
@@ -81,7 +100,10 @@ export function Zegar() {
       />
     </Suspense>
   )
-}
+})
 
-// Pre-load the model
-useGLTF.preload('./models/Zegar.glb') 
+// Pre-load modelu z optymalizacjami
+useGLTF.preload('./models/Zegar.glb', {
+  draco: true,
+  meshOptimizer: true
+}) 

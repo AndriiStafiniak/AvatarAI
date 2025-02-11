@@ -1,6 +1,7 @@
+import React from 'react'
 import { useControls } from 'leva'
 
-export function Floor() {
+export const Floor = React.memo(() => {
   const { position, scale, color, opacity } = useControls('Floor', {
     position: {
       value: [0, 0, 0],
@@ -37,4 +38,4 @@ export function Floor() {
       />
     </mesh>
   )
-} 
+}) 

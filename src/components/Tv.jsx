@@ -94,14 +94,12 @@ export function Tv() {
   })
 
   useEffect(() => {
-    // Znajdź mesh ekranu TV
     const screen = scene.getObjectByName('Ekran')
     if (!screen) {
       console.error('Could not find TV screen mesh named "Ekran"')
       return
     }
 
-    // Tworzenie elementu video
     const video = document.createElement('video')
     video.src = '/videos/logo_film.mp4'
     video.crossOrigin = 'anonymous'
@@ -110,9 +108,11 @@ export function Tv() {
     video.playsInline = true
     video.preload = 'auto'
 
-    // Tworzenie tekstury z video
     const videoTexture = new THREE.VideoTexture(video)
-    videoTexture.needsUpdate = true
+    videoTexture.minFilter = THREE.LinearFilter
+    videoTexture.magFilter = THREE.LinearFilter
+    videoTexture.format = THREE.RGBFormat
+    videoTexture.generateMipmaps = false
     
     // Korekta odwrócenia osi X
     videoTexture.repeat.x = -1
@@ -126,11 +126,9 @@ export function Tv() {
       toneMapped: false,
     })
 
-    // Przypisanie materiału
     screen.material = material
     materialRef.current = material
 
-    // Automatyczne odtwarzanie
     const playVideo = () => {
       video.play().catch(error => {})
     }
@@ -145,37 +143,29 @@ export function Tv() {
 
     return () => {
       video.pause()
+      video.src = ''
+      video.load()
       video.remove()
-      material.dispose()
       videoTexture.dispose()
+      material.dispose()
+      if (screen.material) {
+        screen.material.dispose()
+      }
     }
   }, [scene])
 
-  // Dodaj handler do ponownego uruchomienia video w razie utraty kontekstu
   useEffect(() => {
-    const handleContextLost = () => {
-      if (videoRef.current) {
-        videoRef.current.play().catch(console.error)
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        videoRef.current?.pause()
+      } else {
+        videoRef.current?.play().catch(console.error)
       }
     }
 
-    const handleContextRestored = () => {
-      if (materialRef.current) {
-        materialRef.current.map.needsUpdate = true
-      }
-    }
-
-    const canvas = document.querySelector('canvas')
-    if (canvas) {
-      canvas.addEventListener('webglcontextlost', handleContextLost)
-      canvas.addEventListener('webglcontextrestored', handleContextRestored)
-    }
-
+    document.addEventListener('visibilitychange', handleVisibilityChange)
     return () => {
-      if (canvas) {
-        canvas.removeEventListener('webglcontextlost', handleContextLost)
-        canvas.removeEventListener('webglcontextrestored', handleContextRestored)
-      }
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [])
 

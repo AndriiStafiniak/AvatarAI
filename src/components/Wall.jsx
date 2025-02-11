@@ -1,6 +1,7 @@
+import React from 'react'
 import { useControls } from 'leva'
 
-export function Wall() {
+export const Wall = React.memo(() => {
   const { position, scale, rotation, color, opacity } = useControls('Wall', {
     position: {
       value: [0, 5, -5],
@@ -40,4 +41,4 @@ export function Wall() {
       />
     </mesh>
   )
-} 
+}) 
