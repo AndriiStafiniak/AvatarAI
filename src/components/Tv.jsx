@@ -103,7 +103,7 @@ export function Tv() {
 
     // Tworzenie elementu video
     const video = document.createElement('video')
-    video.src = '/videos/logo_greenhub.mp4'
+    video.src = '/videos/logo_film.mp4'
     video.crossOrigin = 'anonymous'
     video.loop = true
     video.muted = true
