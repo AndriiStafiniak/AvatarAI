@@ -14,7 +14,9 @@ import { Zegar } from './components/Zegar'
 import { SceneObject } from './components/SceneObject'
 import { Vase } from './components/Vase'
 import './App.css'
-
+import { Chair } from './components/Chair'
+import { CoffeeTable } from './components/CoffeeTable'
+import { RollupWithGirl } from './components/RollupWithGirl'
 const AVATAR_ID = 'fe2da934-6aa4-11ef-8fba-42010a7be011'
 
 // Optymalizacja ErrorBoundary z lepszą obsługą błędów
@@ -54,7 +56,7 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
   return (
     <Canvas 
       shadows 
-      camera={{ position: [0, 0.5, 3], fov: 55 }}
+      camera={{ position: [0.5, 0.5, 3], fov: 87 }}
       onCreated={({ gl }) => {
         gl.domElement.addEventListener('webglcontextlost', (e) => {
           e.preventDefault()
@@ -113,7 +115,10 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
             <Wall />
             <Tv />
             <Zegar />
+            <CoffeeTable />
             <Vase/>
+            <Chair />
+            <RollupWithGirl />
           </group>
         </Suspense>
       </PresentationControls>
