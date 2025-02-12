@@ -1,6 +1,6 @@
 import React, { Suspense, useState, Component, useCallback } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { Environment, PresentationControls } from '@react-three/drei'
+import { Environment, PresentationControls, OrbitControls } from '@react-three/drei'
 import { Leva } from 'leva'
 import { ConvaiContext } from './contexts/ConvaiContext'
 import { LoadingSpinner } from './components/LoadingSpinner'
@@ -12,9 +12,10 @@ import { Wall } from './components/Wall'
 import { Tv } from './components/Tv'
 import { Zegar } from './components/Zegar'
 import { SceneObject } from './components/SceneObject'
+import { Vase } from './components/Vase'
 import './App.css'
 
-const AVATAR_ID = '881e4aac-50d5-11ef-9461-42010a7be011'
+const AVATAR_ID = 'fe2da934-6aa4-11ef-8fba-42010a7be011'
 
 // Optymalizacja ErrorBoundary z lepszą obsługą błędów
 class Scene3DErrorBoundary extends Component {
@@ -65,6 +66,7 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
         })
       }}
     >
+      <OrbitControls />
       <Environment 
         preset="sunset" 
         background
@@ -111,6 +113,7 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
             <Wall />
             <Tv />
             <Zegar />
+            <Vase/>
           </group>
         </Suspense>
       </PresentationControls>
@@ -131,7 +134,7 @@ const App = () => {
 
   return (
     <div className="app-container">
-      <Leva hidden={true} />
+      <Leva hidden={false} />
       <ConvaiContext.Provider value={{ currentAction, setCurrentAction }}>
         <div className="scene-container">
           {!isAvatarLoaded && (

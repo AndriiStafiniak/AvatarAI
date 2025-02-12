@@ -6,7 +6,7 @@ import * as THREE from 'three'
 import { useControls, folder } from 'leva'
 
 const API_KEY = '2d12bd421e3af7ce47223bce45944908'
-const AVATAR_ID = '881e4aac-50d5-11ef-9461-42010a7be011'
+const AVATAR_ID = 'fe2da934-6aa4-11ef-8fba-42010a7be011'
 const CONVAI_API_URL = 'https://api.convai.com/character/get'
 
 function AvatarModel({ modelUrl, isPlaying, currentAction, onLoad, ...props }) {

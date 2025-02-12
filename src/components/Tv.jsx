@@ -20,7 +20,7 @@ export function Tv() {
     },
 
     scale: {
-      value: 0.9,
+      value: 1.2,
       min: 0.1,
       max: 5,
       step: 0.1,
