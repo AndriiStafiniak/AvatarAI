@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import Draggable from 'react-draggable'
 import './ChatInterface.css'
-import { MdMic, MdMicOff, MdSend, MdRefresh } from 'react-icons/md'
+import { MdSend, MdRefresh } from 'react-icons/md'
 import { ConvaiClient } from 'convai-web-sdk'
 
 const DEFAULT_QUESTION = "Cześć! Jak się masz?"
@@ -14,21 +14,11 @@ export function ChatInterface({ characterId }) {
   const messagesEndRef = useRef(null)
   const chatContainerRef = useRef(null)
   const nodeRef = useRef(null)
-  const [micError, setMicError] = useState(null)
-  const [isRecording, setIsRecording] = useState(false)
-  const [isLiveMode, setIsLiveMode] = useState(false)
-  const [audioStream, setAudioStream] = useState(null)
-  const audioAnalyser = useRef(null)
-  const silenceTimer = useRef(null)
   
   // Convai Client refs
   const convaiClient = useRef(null)
   const finalizedUserText = useRef("")
   const npcTextRef = useRef("")
-
-  // Dodaj nowe stałe (można dostosować wartości)
-  const SILENCE_THRESHOLD = -45 // dB
-  const SILENCE_DELAY = 1500 // ms
 
   useEffect(() => {
     let initializedClient = null
@@ -48,7 +38,6 @@ export function ChatInterface({ characterId }) {
             await initializedClient.audioContext.resume()
           } catch (audioError) {
             console.error('Audio Context Error:', audioError)
-            setMicError('Wymagane zezwolenie na dźwięk - kliknij gdziekolwiek na stronie')
           }
         }
         
@@ -90,7 +79,6 @@ export function ChatInterface({ characterId }) {
         })
       } catch (error) {
         console.error('Init error:', error)
-        setMicError('Błąd inicjalizacji czatu głosowego')
       }
     }
 
@@ -107,82 +95,6 @@ export function ChatInterface({ characterId }) {
       }
     }
   }, [characterId])
-
-  const handleMicClick = async () => {
-    try {
-      if (!isLiveMode) {
-        // Rozpocznij nasłuchiwanie
-        if (!navigator.mediaDevices?.getUserMedia) {
-          throw new Error('Twoja przeglądarka nie wspiera nagrywania głosu')
-        }
-
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-        setAudioStream(stream)
-        
-        // Inicjalizacja analizatora audio
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)()
-        const analyser = audioContext.createAnalyser()
-        analyser.fftSize = 512
-        audioAnalyser.current = analyser
-        
-        const source = audioContext.createMediaStreamSource(stream)
-        source.connect(analyser)
-        
-        setIsLiveMode(true)
-        setMicError(null)
-        finalizedUserText.current = ""
-        await convaiClient.current.startAudioChunk()
-        
-        // Rozpocznij monitorowanie poziomu dźwięku
-        checkAudioLevel()
-      } else {
-        // Zatrzymaj nasłuchiwanie
-        stopListening()
-      }
-    } catch (error) {
-      console.error('Microphone error:', error)
-      setMicError(error.message || 'Błąd dostępu do mikrofonu')
-      setIsLiveMode(false)
-    }
-  }
-
-  const checkAudioLevel = () => {
-    if (!isLiveMode) return
-
-    const dataArray = new Uint8Array(audioAnalyser.current.frequencyBinCount)
-    audioAnalyser.current.getByteFrequencyData(dataArray)
-    
-    const average = dataArray.reduce((a, b) => a + b) / dataArray.length
-    const dB = 20 * Math.log10(average / 255)
-
-    if (dB > SILENCE_THRESHOLD) {
-      // Dźwięk wykryty - zresetuj timer
-      if (silenceTimer.current) clearTimeout(silenceTimer.current)
-      silenceTimer.current = setTimeout(() => {
-        stopListening()
-      }, SILENCE_DELAY)
-    }
-
-    requestAnimationFrame(checkAudioLevel)
-  }
-
-  const stopListening = async () => {
-    if (silenceTimer.current) clearTimeout(silenceTimer.current)
-    if (audioStream) {
-      audioStream.getTracks().forEach(track => track.stop())
-    }
-    setIsLiveMode(false)
-    setIsTyping(true)
-    
-    try {
-      if (convaiClient.current) {
-        await convaiClient.current.endAudioChunk()
-      }
-    } catch (error) {
-      console.error('Recording error:', error)
-      setIsTyping(false)
-    }
-  }
 
   const sendTextMessage = async (e) => {
     e?.preventDefault()
@@ -218,7 +130,6 @@ export function ChatInterface({ characterId }) {
     setInputMessage('')
     setIsTyping(false)
     setShowStarterQuestion(true)
-    setMicError(null)
     
     // Reinitialize Convai client
     if (convaiClient.current) {
@@ -247,7 +158,6 @@ export function ChatInterface({ characterId }) {
             await initializedClient.audioContext.resume()
           } catch (audioError) {
             console.error('Audio Context Error:', audioError)
-            setMicError('Wymagane zezwolenie na dźwięk - kliknij gdziekolwiek na stronie')
           }
         }
         
@@ -289,7 +199,6 @@ export function ChatInterface({ characterId }) {
         })
       } catch (error) {
         console.error('Init error:', error)
-        setMicError('Błąd inicjalizacji czatu głosowego')
       }
     }
     
@@ -333,17 +242,6 @@ export function ChatInterface({ characterId }) {
           <div ref={messagesEndRef} />
         </div>
         <div className="chat-controls">
-          <div className="mic-container">
-            <button
-              type="button"
-              className={`mic-button ${isLiveMode ? 'recording' : ''} ${micError ? 'error' : ''}`}
-              onClick={handleMicClick}
-              title={micError || (isLiveMode ? 'Kliknij aby zakończyć' : 'Kliknij aby rozpocząć rozmowę')}
-            >
-              {isLiveMode ? <MdMicOff /> : <MdMic />}
-            </button>
-            {micError && <div className="mic-error">{micError}</div>}
-          </div>
           <form onSubmit={sendTextMessage} className="chat-input-form">
             <input
               type="text"
