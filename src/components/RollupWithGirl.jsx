@@ -7,11 +7,11 @@ export const RollupWithGirl = React.memo(() => {
   // Kontrolki Leva dla rollupu z dziewczyną
   const { position, rotation, scale } = useControls('Rollup with Girl', {
     position: {
-      value: [0, 0, 1.5],
+      value: [-1.7, 0, 0.7],
       step: 0.1,
     },
     rotation: {
-      value: [0, Math.PI, 0],
+      value: [0, Math.PI * 0.3, 0],
       step: 0.01,
     },
     scale: {
@@ -22,7 +22,7 @@ export const RollupWithGirl = React.memo(() => {
     }
   })
 
-  const { scene: gltfScene } = useGLTF('./models/rollupWithGirl.glb', {
+  const { scene: gltfScene } = useGLTF('./models/rollupWithGirl1.glb', {
     draco: true,
     meshOptimizer: true
   })
@@ -42,7 +42,7 @@ export const RollupWithGirl = React.memo(() => {
 })
 
 // Pre-load modelu
-useGLTF.preload('./models/rollupWithGirl.glb', {
+useGLTF.preload('./models/rollupWithGirl1.glb', {
   draco: true,
   meshOptimizer: true
 }) 

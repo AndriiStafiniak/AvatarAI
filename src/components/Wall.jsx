@@ -8,7 +8,7 @@ export const Wall = React.memo(() => {
       step: 0.1,
     },
     scale: {
-      value: { width: 21, height: 13 },
+      value: { width: 20, height: 10 },
       step: 1,
     },
     rotation: {
