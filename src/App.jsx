@@ -68,7 +68,7 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
         })
       }}
     >
-      <OrbitControls />
+      {/* <OrbitControls /> */}
       <Environment 
         preset="sunset" 
         background
@@ -139,7 +139,7 @@ const App = () => {
 
   return (
     <div className="app-container">
-      <Leva hidden={false} />
+      <Leva hidden={true} />
       <ConvaiContext.Provider value={{ currentAction, setCurrentAction }}>
         <div className="scene-container">
           {!isAvatarLoaded && (
