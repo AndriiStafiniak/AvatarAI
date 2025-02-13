@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import Draggable from 'react-draggable'
 import './ChatInterface.css'
-import { MdSend, MdRefresh } from 'react-icons/md'
+import { MdSend, MdRefresh, MdExpandMore, MdExpandLess } from 'react-icons/md'
 import { ConvaiClient } from 'convai-web-sdk'
 
 const DEFAULT_QUESTION = "Cześć! Jak się masz?"
@@ -19,6 +19,14 @@ export function ChatInterface({ characterId }) {
   const convaiClient = useRef(null)
   const finalizedUserText = useRef("")
   const npcTextRef = useRef("")
+
+  // Dodajemy nowy stan i ikony
+  const [isExpanded, setIsExpanded] = useState(true)
+
+  // Funkcja do przełączania stanu
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded)
+  }
 
   useEffect(() => {
     let initializedClient = null
@@ -206,9 +214,17 @@ export function ChatInterface({ characterId }) {
   }
 
   return (
-    <Draggable nodeRef={nodeRef} handle=".chat-header" bounds="body">
-      <div ref={nodeRef} className="chat-interface">
-        <div className="chat-header">
+    <Draggable 
+      nodeRef={nodeRef} 
+      bounds="body"
+      cancel=".chat-input, .chat-send-button, .refresh-button"
+    >
+      <div 
+        ref={nodeRef} 
+        className="chat-interface"
+        style={{ height: isExpanded ? '500px' : '40px' }}
+      >
+        <div className="chat-header" onClick={toggleExpand}>
           <span>Chat</span>
           <div className="header-controls">
             <button 
@@ -218,43 +234,52 @@ export function ChatInterface({ characterId }) {
             >
               <MdRefresh />
             </button>
+            {isExpanded ? (
+              <MdExpandMore className="expand-icon" />
+            ) : (
+              <MdExpandLess className="expand-icon" />
+            )}
             <div className="drag-handle">⋮⋮</div>
           </div>
         </div>
-        <div ref={chatContainerRef} className="chat-messages">
-          {messages.map((msg, index) => (
-            <div 
-              key={index} 
-              className={`message ${msg.sender} ${msg.error ? 'error' : ''}`}
-            >
-              {msg.text}
+        {isExpanded && (
+          <>
+            <div ref={chatContainerRef} className="chat-messages">
+              {messages.map((msg, index) => (
+                <div 
+                  key={index} 
+                  className={`message ${msg.sender} ${msg.error ? 'error' : ''}`}
+                >
+                  {msg.text}
+                </div>
+              ))}
+              {isTyping && (
+                <div className="message bot typing">
+                  <div className="typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                </div>
+              )}
+              <div ref={messagesEndRef} />
             </div>
-          ))}
-          {isTyping && (
-            <div className="message bot typing">
-              <div className="typing-indicator">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
+            <div className="chat-controls">
+              <form onSubmit={sendTextMessage} className="chat-input-form">
+                <input
+                  type="text"
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
+                  placeholder="Napisz wiadomość..."
+                  className="chat-input"
+                />
+                <button type="submit" className="chat-send-button" title="Wyślij">
+                  <MdSend />
+                </button>
+              </form>
             </div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
-        <div className="chat-controls">
-          <form onSubmit={sendTextMessage} className="chat-input-form">
-            <input
-              type="text"
-              value={inputMessage}
-              onChange={(e) => setInputMessage(e.target.value)}
-              placeholder="Napisz wiadomość..."
-              className="chat-input"
-            />
-            <button type="submit" className="chat-send-button" title="Wyślij">
-              <MdSend />
-            </button>
-          </form>
-        </div>
+          </>
+        )}
       </div>
     </Draggable>
   )

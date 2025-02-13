@@ -11,6 +11,8 @@
   overflow: hidden;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   z-index: 1000;
+  transition: height 0.3s ease;
+  cursor: move;
 }
 
 .chat-header {
@@ -18,22 +20,17 @@
   background: #2c3e50;
   color: white;
   font-weight: 500;
-  cursor: move;
+  cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
   user-select: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background 0.2s;
 }
 
 .drag-handle {
-  cursor: move;
-  opacity: 0.7;
-  transition: opacity 0.2s;
-}
-
-.drag-handle:hover {
-  opacity: 1;
+  display: none;
 }
 
 .chat-messages {
@@ -102,6 +99,7 @@
   font-size: 0.95rem;
   transition: border-color 0.2s;
   min-width: 0;
+  cursor: auto !important;
 }
 
 .chat-input:focus {
@@ -122,6 +120,7 @@
   width: 40px;
   height: 40px;
   font-size: 1.2rem;
+  cursor: auto !important;
 }
 
 .chat-send-button:hover {
@@ -285,6 +284,7 @@
   justify-content: center;
   opacity: 0.7;
   transition: all 0.2s;
+  cursor: auto !important;
 }
 
 .refresh-button:hover {
@@ -317,4 +317,17 @@
 
 .voice-button.listening:hover {
   background-color: #cc0000;
+}
+
+.expand-icon {
+  margin-left: 10px;
+  transition: transform 0.2s;
+}
+
+/* Dodajemy media query dla mniejszych ekranów */
+@media (max-width: 768px) {
+  .chat-interface {
+    width: 300px;
+    height: 400px !important;
+  }
 } 
