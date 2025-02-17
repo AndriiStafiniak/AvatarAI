@@ -20,6 +20,10 @@ import { Rollup } from './components/Rollup'
 import { KeyboardControls } from '@react-three/drei'
 import { FPVCamera } from './components/FPVCamera'
 import { Physics } from '@react-three/cannon'
+import { LeftWall } from './components/LeftWall'
+import { RightWall } from './components/RightWall'
+import { BackWall } from './components/BackWall'
+import { Ceiling } from './components/Ceiling'
 const AVATAR_ID = 'fe2da934-6aa4-11ef-8fba-42010a7be011'
 
 // Optymalizacja ErrorBoundary z lepszą obsługą błędów
@@ -70,7 +74,11 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
       }}
     >
       <Physics gravity={[0, -9.81, 0]}>
-        <FPVCamera speed={5} sensitivity={0.0015} />
+        <FPVCamera 
+          speed={5} 
+          sensitivity={0.0020}
+         
+        />
         <Environment 
           preset="sunset" 
           background
@@ -121,6 +129,10 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
               <Vase/>
               <Chair />
               <Rollup />
+              <LeftWall />
+              <RightWall />
+              <BackWall />
+              <Ceiling />
             </group>
           </Suspense>
         {/* </PresentationControls> */}

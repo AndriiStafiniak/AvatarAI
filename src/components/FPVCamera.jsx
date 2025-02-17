@@ -22,6 +22,9 @@ export const FPVCamera = ({ speed = 5, sensitivity = 0.002 }) => {
 
   const isLocked = useRef(false)
 
+  const mouseOffset = useRef({ x: 0, y: 0 })
+  const targetRotation = useRef({ x: 0, y: 0 })
+
   useEffect(() => {
     const canvas = gl.domElement
     
@@ -35,8 +38,10 @@ export const FPVCamera = ({ speed = 5, sensitivity = 0.002 }) => {
 
     const onMouseMove = (e) => {
       if (isLocked.current) {
-        camera.rotation.y -= e.movementX * sensitivity
-        camera.rotation.x = Math.max(
+        mouseOffset.current.x -= e.movementX * sensitivity
+        mouseOffset.current.y += e.movementY * sensitivity
+        
+        mouseOffset.current.y = Math.max(
           -Math.PI/2, 
           Math.min(
             Math.PI/2, 
@@ -58,6 +63,11 @@ export const FPVCamera = ({ speed = 5, sensitivity = 0.002 }) => {
   }, [camera, gl, sensitivity])
 
   useFrame((_, delta) => {
+    targetRotation.current.y += (mouseOffset.current.x - targetRotation.current.y) * 0.1
+    camera.rotation.y = targetRotation.current.y
+    
+    camera.rotation.x = 0
+
     const { forward, backward, left, right } = get()
     const direction = new Vector3()
     const frontVector = new Vector3(0, 0, (backward ? 1 : 0) - (forward ? 1 : 0))
@@ -66,12 +76,10 @@ export const FPVCamera = ({ speed = 5, sensitivity = 0.002 }) => {
     direction
       .subVectors(frontVector, sideVector)
       .normalize()
-      .multiplyScalar(speed)
+      .multiplyScalar(speed * 2)
       .applyEuler(camera.rotation)
 
     api.velocity.set(direction.x, velocity.current[1], direction.z)
-
-    // Synchronizuj pozycję kamery z ciałem fizycznym
     ref.current.getWorldPosition(camera.position)
   })
 
