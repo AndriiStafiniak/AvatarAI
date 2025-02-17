@@ -94,62 +94,64 @@ export function Tv() {
   })
 
   useEffect(() => {
-    const screen = scene.getObjectByName('Ekran')
-    if (!screen) {
-      console.error('Could not find TV screen mesh named "Ekran"')
-      return
-    }
+    const timeoutRef = setTimeout(() => {
+      const screen = scene.getObjectByName('Ekran')
+      if (!screen) {
+        console.error('Could not find TV screen mesh named "Ekran"')
+        return
+      }
 
-    const video = document.createElement('video')
-    video.src = '/videos/logo_film.mp4'
-    video.crossOrigin = 'anonymous'
-    video.loop = true
-    video.muted = true
-    video.playsInline = true
-    video.preload = 'auto'
+      const video = document.createElement('video')
+      video.src = '/videos/logo_film.mp4'
+      video.crossOrigin = 'anonymous'
+      video.loop = true
+      video.muted = true
+      video.playsInline = true
+      video.preload = 'auto'
 
-    const videoTexture = new THREE.VideoTexture(video)
-    videoTexture.minFilter = THREE.LinearFilter
-    videoTexture.magFilter = THREE.LinearFilter
-    videoTexture.format = THREE.RGBFormat
-    videoTexture.generateMipmaps = false
-    
-    // Korekta odwrócenia osi X
-    videoTexture.repeat.x = -1
-    videoTexture.offset.x = 1
-    videoTexture.wrapS = THREE.RepeatWrapping
+      const videoTexture = new THREE.VideoTexture(video)
+      videoTexture.minFilter = THREE.LinearFilter
+      videoTexture.magFilter = THREE.LinearFilter
+      videoTexture.format = THREE.RGBFormat
+      videoTexture.generateMipmaps = false
+      
+      videoTexture.repeat.x = -1
+      videoTexture.offset.x = 1
+      videoTexture.wrapS = THREE.RepeatWrapping
 
-    // Proste ustawienia materiału
-    const material = new THREE.MeshBasicMaterial({
-      map: videoTexture,
-      side: THREE.DoubleSide,
-      toneMapped: false,
-    })
+      const material = new THREE.MeshBasicMaterial({
+        map: videoTexture,
+        side: THREE.DoubleSide,
+        toneMapped: false,
+      })
 
-    screen.material = material
-    materialRef.current = material
+      screen.material = material
+      materialRef.current = material
 
-    const playVideo = () => {
-      video.play().catch(error => {})
-    }
+      const playVideo = () => {
+        video.play().catch(error => {})
+      }
 
-    if (video.readyState >= 3) {
-      playVideo()
-    } else {
-      video.addEventListener('loadeddata', playVideo, { once: true })
-    }
+      if (video.readyState >= 3) {
+        playVideo()
+      } else {
+        video.addEventListener('loadeddata', playVideo, { once: true })
+      }
 
-    videoRef.current = video
+      videoRef.current = video
+    }, 5000)
 
     return () => {
-      video.pause()
-      video.src = ''
-      video.load()
-      video.remove()
-      videoTexture.dispose()
-      material.dispose()
-      if (screen.material) {
-        screen.material.dispose()
+      clearTimeout(timeoutRef)
+      if (videoRef.current) {
+        videoRef.current.pause()
+        videoRef.current.src = ''
+        videoRef.current.load()
+        videoRef.current.remove()
+        if (materialRef.current) {
+          materialRef.current.map?.dispose()
+          materialRef.current.dispose()
+        }
       }
     }
   }, [scene])

@@ -6,5 +6,10 @@ export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
     include: ['convai-web-sdk']
+  },
+  server: {
+    fs: {
+      allow: ['..']
+    }
   }
 })

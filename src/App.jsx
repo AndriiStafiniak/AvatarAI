@@ -17,6 +17,8 @@ import './App.css'
 import { Chair } from './components/Chair'
 import { CoffeeTable } from './components/CoffeeTable'
 import { Rollup } from './components/Rollup'
+import { KeyboardControls } from '@react-three/drei'
+import { FPVCamera } from './components/FPVCamera'
 const AVATAR_ID = 'fe2da934-6aa4-11ef-8fba-42010a7be011'
 
 // Optymalizacja ErrorBoundary z lepszą obsługą błędów
@@ -57,18 +59,9 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
     <Canvas 
       shadows 
       camera={{ position: [0.5, 0.5, 3], fov: 87 }}
-      onCreated={({ gl }) => {
-        gl.domElement.addEventListener('webglcontextlost', (e) => {
-          e.preventDefault()
-          console.error('WebGL Context Lost:', e)
-          gl.domElement.addEventListener('webglcontextrestored', () => {
-            console.log('WebGL context restored')
-            gl.setSize(gl.domElement.width, gl.domElement.height)
-          }, { once: true })
-        })
-      }}
+      onCreated={({ gl, camera }) => (gl.domElement.style.touchAction = 'none')}
     >
-      <OrbitControls />
+      <FPVCamera speed={5} sensitivity={0.0015} />
       <Environment 
         preset="sunset" 
         background
@@ -79,7 +72,7 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
         environmentIntensity={0.5}
       />
       
-      <PresentationControls
+      {/* <PresentationControls
         global
         position={[0, -0.5, 0]}
         rotation={[0, 0, 0]}
@@ -89,7 +82,7 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
         snap={{ mass: 3, tension: 200 }}
         speed={1.5}
         zoom={1}
-      >
+      > */}
         <ambientLight intensity={0.7} />
         <directionalLight
           position={[5, 5, 5]}
@@ -121,7 +114,7 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
             <Rollup />
           </group>
         </Suspense>
-      </PresentationControls>
+      {/* </PresentationControls> */}
     </Canvas>
   )
 }, (prevProps, nextProps) => {
@@ -141,21 +134,30 @@ const App = () => {
     <div className="app-container">
       <Leva hidden={false} />
       <ConvaiContext.Provider value={{ currentAction, setCurrentAction }}>
-        <div className="scene-container">
-          {!isAvatarLoaded && (
-            <div className="loading-overlay">
-              <LoadingSpinner progress={70} />
-            </div>
-          )}
-          <Scene3DErrorBoundary>
-            <Scene 
-              isAvatarLoaded={isAvatarLoaded}
-              onAvatarLoaded={handleAvatarLoaded}
-              currentAction={currentAction}
-            />
-          </Scene3DErrorBoundary>
-          {isAvatarLoaded && <ChatInterface characterId={AVATAR_ID} />}
-        </div>
+        <KeyboardControls
+          map={[
+            { name: 'forward', keys: ['ArrowUp', 'KeyW'] },
+            { name: 'backward', keys: ['ArrowDown', 'KeyS'] },
+            { name: 'left', keys: ['ArrowLeft', 'KeyA'] },
+            { name: 'right', keys: ['ArrowRight', 'KeyD'] },
+          ]}
+        >
+          <div className="scene-container">
+            {!isAvatarLoaded && (
+              <div className="loading-overlay">
+                <LoadingSpinner progress={70} />
+              </div>
+            )}
+            <Scene3DErrorBoundary>
+              <Scene 
+                isAvatarLoaded={isAvatarLoaded}
+                onAvatarLoaded={handleAvatarLoaded}
+                currentAction={currentAction}
+              />
+            </Scene3DErrorBoundary>
+            {isAvatarLoaded && <ChatInterface characterId={AVATAR_ID} />}
+          </div>
+        </KeyboardControls>
       </ConvaiContext.Provider>
     </div>
   )
