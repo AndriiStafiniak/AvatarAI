@@ -3,7 +3,7 @@ import { useGLTF } from '@react-three/drei'
 import { SkeletonUtils } from 'three-stdlib'
 
 export const SceneObject = React.memo(({ currentAction }) => {
-  const { scene: gltfScene } = useGLTF('./models/reception_desk.glb', {
+  const { scene: gltfScene } = useGLTF('./models/resize_reception.glb', {
     draco: true,
     meshOptimizer: true
   })
@@ -23,7 +23,7 @@ export const SceneObject = React.memo(({ currentAction }) => {
 })
 
 // Pre-load modelu z optymalizacjami
-useGLTF.preload('./models/reception_desk.glb', {
+useGLTF.preload('./models/resize_reception.glb', {
   draco: true,
   meshOptimizer: true
 }) 

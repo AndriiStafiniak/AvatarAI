@@ -16,7 +16,7 @@ import { Vase } from './components/Vase'
 import './App.css'
 import { Chair } from './components/Chair'
 import { CoffeeTable } from './components/CoffeeTable'
-import { RollupWithGirl } from './components/RollupWithGirl'
+import { Rollup } from './components/Rollup'
 const AVATAR_ID = 'fe2da934-6aa4-11ef-8fba-42010a7be011'
 
 // Optymalizacja ErrorBoundary z lepszą obsługą błędów
@@ -68,7 +68,7 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
         })
       }}
     >
-      {/* <OrbitControls /> */}
+      <OrbitControls />
       <Environment 
         preset="sunset" 
         background
@@ -118,7 +118,7 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
             <CoffeeTable />
             <Vase/>
             <Chair />
-            <RollupWithGirl />
+            <Rollup />
           </group>
         </Suspense>
       </PresentationControls>
@@ -139,7 +139,7 @@ const App = () => {
 
   return (
     <div className="app-container">
-      <Leva hidden={true} />
+      <Leva hidden={false} />
       <ConvaiContext.Provider value={{ currentAction, setCurrentAction }}>
         <div className="scene-container">
           {!isAvatarLoaded && (

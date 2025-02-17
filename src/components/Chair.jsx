@@ -24,7 +24,7 @@ export const Chair = React.memo(({
     }
   })
 
-  const { scene: gltfScene } = useGLTF('./models/chair.glb', {
+  const { scene: gltfScene } = useGLTF('./models/resized_chair.glb', {
     draco: true,
     meshOptimizer: true
   })
@@ -44,7 +44,7 @@ export const Chair = React.memo(({
 })
 
 // Pre-load modelu wózka
-useGLTF.preload('./models/chair.glb', {
+useGLTF.preload('./models/resized_chair.glb', {
   draco: true,
   meshOptimizer: true
 }) 

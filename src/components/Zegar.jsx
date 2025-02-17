@@ -71,7 +71,7 @@ export const Zegar = React.memo(() => {
 
   const { position, rotationY, scale } = useControls('Zegar', {
     position: {
-      value: [-2, 2, -4.9],
+      value: [-2, 2, -5.150],
       step: 0.1,
     },
     rotationY: {
@@ -81,7 +81,7 @@ export const Zegar = React.memo(() => {
       step: 1 
     },
     scale: {
-      value: 1.5,
+      value: 2.4,
       min: 0.1,
       max: 5,
       step: 0.1,
