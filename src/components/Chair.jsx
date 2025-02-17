@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useEffect } from 'react'
 import { useGLTF } from '@react-three/drei'
 import { SkeletonUtils } from 'three-stdlib'
 import { useControls } from 'leva'
@@ -35,9 +35,15 @@ export const Chair = React.memo(({
   const [ref] = useBox(() => ({
     type: 'Static',
     args: [0.5, 1, 0.5],
-    position: [1, 0.5, 1],
+    position: position,
     material: { friction: 0.5 }
   }))
+
+  useEffect(() => {
+    if(ref.current) {
+      ref.current.position.set(...position)
+    }
+  }, [position, ref])
 
   return (
     <group>

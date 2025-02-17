@@ -12,7 +12,7 @@ export function Tv() {
 
   const { position, rotation, scale } = useControls('TV', {
     position: {
-      value: [3, 2, -4.935],
+      value: [3, 2, -2.2],
       step: 0.1,
     },
     rotation: {

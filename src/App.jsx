@@ -59,8 +59,15 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
   return (
     <Canvas 
       shadows 
-      camera={{ position: [0.5, 0.5, 3], fov: 87 }}
-      onCreated={({ gl, camera }) => (gl.domElement.style.touchAction = 'none')}
+      camera={{ 
+        position: [0, 1.5, 3],  // X: 0, Y: 1.5m (wysokość osoby), Z: 3m od przodu
+        fov: 75,                // Naturalne pole widzenia
+        rotation: [0, Math.PI, 0] // Patrzymy w kierunku ujemnej osi Z
+      }}
+      onCreated={({ gl, camera }) => {
+        gl.domElement.style.touchAction = 'none'
+        camera.lookAt(0, 1, 0)  // Celujemy na wysokości 1m (środek awatara)
+      }}
     >
       <Physics gravity={[0, -9.81, 0]}>
         <FPVCamera speed={5} sensitivity={0.0015} />

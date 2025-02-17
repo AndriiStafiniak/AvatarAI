@@ -9,14 +9,18 @@ export const FPVCamera = ({ speed = 5, sensitivity = 0.002 }) => {
   const [ref, api] = useSphere(() => ({
     mass: 1,
     type: 'Dynamic',
-    position: [0, 1, 0],
-    args: [0.5]
+    position: [0, 1.5, 3],
+    args: [0.5],
+    angularFactor: [0, 0, 0],
+    fixedRotation: true,
   }))
 
   const velocity = useRef([0, 0, 0])
   useEffect(() => api.velocity.subscribe(v => (velocity.current = v)), [api])
   
   const [_, get] = useKeyboardControls()
+
+  const isLocked = useRef(false)
 
   useEffect(() => {
     const canvas = gl.domElement
@@ -32,8 +36,13 @@ export const FPVCamera = ({ speed = 5, sensitivity = 0.002 }) => {
     const onMouseMove = (e) => {
       if (isLocked.current) {
         camera.rotation.y -= e.movementX * sensitivity
-        camera.rotation.x -= e.movementY * sensitivity
-        camera.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, camera.rotation.x))
+        camera.rotation.x = Math.max(
+          -Math.PI/2, 
+          Math.min(
+            Math.PI/2, 
+            camera.rotation.x - e.movementY * sensitivity
+          )
+        )
       }
     }
 

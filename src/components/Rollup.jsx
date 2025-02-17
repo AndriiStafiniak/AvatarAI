@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useEffect } from 'react'
 import { useGLTF } from '@react-three/drei'
 import { SkeletonUtils } from 'three-stdlib'
 import { useControls } from 'leva'
@@ -33,9 +33,15 @@ export const Rollup = React.memo(() => {
   const [ref] = useBox(() => ({
     type: 'Static',
     args: [0.8, 1.2, 0.8],
-    position: [2, 0.6, 1],
+    position: position,
     material: { friction: 0.5 }
   }))
+
+  useEffect(() => {
+    if(ref.current) {
+      ref.current.position.set(...position)
+    }
+  }, [position, ref])
 
   return (
     <group>
