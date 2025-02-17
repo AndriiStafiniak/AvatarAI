@@ -19,6 +19,7 @@ import { CoffeeTable } from './components/CoffeeTable'
 import { Rollup } from './components/Rollup'
 import { KeyboardControls } from '@react-three/drei'
 import { FPVCamera } from './components/FPVCamera'
+import { Physics } from '@react-three/cannon'
 const AVATAR_ID = 'fe2da934-6aa4-11ef-8fba-42010a7be011'
 
 // Optymalizacja ErrorBoundary z lepszą obsługą błędów
@@ -61,60 +62,62 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
       camera={{ position: [0.5, 0.5, 3], fov: 87 }}
       onCreated={({ gl, camera }) => (gl.domElement.style.touchAction = 'none')}
     >
-      <FPVCamera speed={5} sensitivity={0.0015} />
-      <Environment 
-        preset="sunset" 
-        background
-        blur={0.5}
-        frames={Infinity}
-        resolution={256}
-        backgroundIntensity={0.5}
-        environmentIntensity={0.5}
-      />
-      
-      {/* <PresentationControls
-        global
-        position={[0, -0.5, 0]}
-        rotation={[0, 0, 0]}
-        polar={[-0.2, 0.2]}
-        azimuth={[-0.3, 0.3]}
-        config={{ mass: 2, tension: 400 }}
-        snap={{ mass: 3, tension: 200 }}
-        speed={1.5}
-        zoom={1}
-      > */}
-        <ambientLight intensity={0.7} />
-        <directionalLight
-          position={[5, 5, 5]}
-          intensity={0.5}
-          castShadow
-          shadow-mapSize={[1024, 1024]}
-          shadow-camera-far={25}
-          shadow-camera-near={0.1}
-          shadow-camera-top={10}
-          shadow-camera-bottom={-10}
-          shadow-camera-left={-10}
-          shadow-camera-right={10}
+      <Physics gravity={[0, -9.81, 0]}>
+        <FPVCamera speed={5} sensitivity={0.0015} />
+        <Environment 
+          preset="sunset" 
+          background
+          blur={0.5}
+          frames={Infinity}
+          resolution={256}
+          backgroundIntensity={0.5}
+          environmentIntensity={0.5}
         />
-        <Suspense fallback={null}>
-          <group position={[0, -1, 0]}>
-            <ConvaiAvatar 
-              castShadow 
-              receiveShadow 
-              onLoad={onAvatarLoaded}
-            />
-            <SceneObject currentAction={currentAction} />
-            <Floor />
-            <Wall />
-            <Tv />
-            <Zegar />
-            <CoffeeTable />
-            <Vase/>
-            <Chair />
-            <Rollup />
-          </group>
-        </Suspense>
-      {/* </PresentationControls> */}
+        
+        {/* <PresentationControls
+          global
+          position={[0, -0.5, 0]}
+          rotation={[0, 0, 0]}
+          polar={[-0.2, 0.2]}
+          azimuth={[-0.3, 0.3]}
+          config={{ mass: 2, tension: 400 }}
+          snap={{ mass: 3, tension: 200 }}
+          speed={1.5}
+          zoom={1}
+        > */}
+          <ambientLight intensity={0.7} />
+          <directionalLight
+            position={[5, 5, 5]}
+            intensity={0.5}
+            castShadow
+            shadow-mapSize={[1024, 1024]}
+            shadow-camera-far={25}
+            shadow-camera-near={0.1}
+            shadow-camera-top={10}
+            shadow-camera-bottom={-10}
+            shadow-camera-left={-10}
+            shadow-camera-right={10}
+          />
+          <Suspense fallback={null}>
+            <group position={[0, -1, 0]}>
+              <ConvaiAvatar 
+                castShadow 
+                receiveShadow 
+                onLoad={onAvatarLoaded}
+              />
+              <SceneObject currentAction={currentAction} />
+              <Floor position={[0, -0.1, 0]} />
+              <Wall />
+              <Tv />
+              <Zegar />
+              <CoffeeTable />
+              <Vase/>
+              <Chair />
+              <Rollup />
+            </group>
+          </Suspense>
+        {/* </PresentationControls> */}
+      </Physics>
     </Canvas>
   )
 }, (prevProps, nextProps) => {

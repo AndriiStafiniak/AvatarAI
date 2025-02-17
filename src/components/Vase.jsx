@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import { useGLTF } from '@react-three/drei'
 import { SkeletonUtils } from 'three-stdlib'
 import { useControls } from 'leva'
+import { useBox } from '@react-three/cannon'
 
 export const Vase = React.memo(({ 
   currentAction,
@@ -31,6 +32,13 @@ export const Vase = React.memo(({
 
   const clone = useMemo(() => SkeletonUtils.clone(gltfScene), [gltfScene])
 
+  const [ref] = useBox(() => ({
+    type: 'Static',
+    args: [0.3, 0.5, 0.3],
+    position: [1.5, 0.25, 1.5],
+    material: { friction: 0.5 }
+  }))
+
   return (
     <group>
       <primitive 
@@ -39,6 +47,9 @@ export const Vase = React.memo(({
         scale={scale}
         rotation={rotation}
       />
+      <mesh ref={ref} castShadow receiveShadow>
+        {/* Istniejąca geometria wazy */}
+      </mesh>
     </group>
   )
 })

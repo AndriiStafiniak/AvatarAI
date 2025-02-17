@@ -2,6 +2,7 @@ import { useGLTF } from '@react-three/drei'
 import { useControls } from 'leva'
 import { useRef, useEffect } from 'react'
 import * as THREE from 'three'
+import { useBox } from '@react-three/cannon'
 
 export function Tv() {
   const { scene } = useGLTF('./models/Tv.glb')
@@ -93,6 +94,13 @@ export function Tv() {
     }
   })
 
+  const [ref] = useBox(() => ({
+    type: 'Static',
+    args: [1.5, 0.5, 0.1],
+    position: [0, 0.5, -2],
+    material: { friction: 0.5 }
+  }))
+
   useEffect(() => {
     const timeoutRef = setTimeout(() => {
       const screen = scene.getObjectByName('Ekran')
@@ -179,6 +187,9 @@ export function Tv() {
       scale={scale}
     >
       <primitive object={scene} />
+      <mesh ref={ref} castShadow receiveShadow>
+        {/* Istniejąca geometria TV */}
+      </mesh>
     </group>
   )
 }

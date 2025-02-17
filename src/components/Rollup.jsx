@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import { useGLTF } from '@react-three/drei'
 import { SkeletonUtils } from 'three-stdlib'
 import { useControls } from 'leva'
+import { useBox } from '@react-three/cannon'
 
 export const Rollup = React.memo(() => {
   // Kontrolki Leva dla rollupu z dziewczyną
@@ -29,6 +30,13 @@ export const Rollup = React.memo(() => {
 
   const clone = useMemo(() => SkeletonUtils.clone(gltfScene), [gltfScene])
 
+  const [ref] = useBox(() => ({
+    type: 'Static',
+    args: [0.8, 1.2, 0.8],
+    position: [2, 0.6, 1],
+    material: { friction: 0.5 }
+  }))
+
   return (
     <group>
       <primitive 
@@ -37,6 +45,9 @@ export const Rollup = React.memo(() => {
         rotation={rotation}
         scale={scale}
       />
+      <mesh ref={ref} castShadow receiveShadow>
+        {/* Istniejąca geometria rollupu */}
+      </mesh>
     </group>
   )
 })

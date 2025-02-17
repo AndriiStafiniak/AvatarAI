@@ -9,9 +9,11 @@
     "deploy": "npx vercel --prod"
   },
   "dependencies": {
+    "@react-three/cannon": "^6.6.0",
     "@react-three/drei": "^9.121.4",
     "@react-three/fiber": "^8.17.12",
     "axios": "^1.7.9",
+    "cannon-es": "^0.20.0",
     "convai-web-sdk": "^0.1.4",
     "leva": "^0.10.0",
     "lodash": "^4.17.21",

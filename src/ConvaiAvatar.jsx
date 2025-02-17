@@ -1,7 +1,7 @@
 import React, { useEffect, useState, Suspense, useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
 import { SkeletonUtils } from 'three-stdlib'
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
+import { FBXLoader } from 'three/addons/loaders/FBXLoader.js'
 import * as THREE from 'three'
 import { useControls, folder } from 'leva'
 

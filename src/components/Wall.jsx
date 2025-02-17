@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
 import { useControls } from 'leva'
 import * as THREE from 'three'
+import { useBox } from '@react-three/cannon'
 
 export const Wall = React.memo(() => {
   const { position, scale, rotation, colorType, color1, color2, opacity } = useControls('Wall', {
@@ -72,19 +73,17 @@ export const Wall = React.memo(() => {
     return geom
   }, [scale, colorType, color1, color2])
 
+  const [ref] = useBox(() => ({
+    type: 'Static',
+    args: [10, 3, 0.2],
+    position: [0, 1.5, -2.5],
+    material: { friction: 0.5 }
+  }))
+
   return (
-    <mesh 
-      position={position}
-      rotation={rotation}
-      receiveShadow
-      geometry={geometry}
-    >
-      <meshPhongMaterial 
-        vertexColors
-        transparent
-        opacity={opacity}
-        side={THREE.DoubleSide}
-      />
+    <mesh ref={ref} castShadow receiveShadow>
+      <boxGeometry args={[10, 3, 0.2]} />
+      <meshStandardMaterial color="#c0c0c0" />
     </mesh>
   )
 }) 

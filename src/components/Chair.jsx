@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import { useGLTF } from '@react-three/drei'
 import { SkeletonUtils } from 'three-stdlib'
 import { useControls } from 'leva'
+import { useBox } from '@react-three/cannon'
 
 export const Chair = React.memo(({ 
   currentAction,
@@ -31,6 +32,13 @@ export const Chair = React.memo(({
 
   const clone = useMemo(() => SkeletonUtils.clone(gltfScene), [gltfScene])
 
+  const [ref] = useBox(() => ({
+    type: 'Static',
+    args: [0.5, 1, 0.5],
+    position: [1, 0.5, 1],
+    material: { friction: 0.5 }
+  }))
+
   return (
     <group>
       <primitive 
@@ -39,6 +47,9 @@ export const Chair = React.memo(({
         scale={scale}
         rotation={rotation}
       />
+      <mesh ref={ref} castShadow receiveShadow>
+        {/* Istniejąca geometria krzesła */}
+      </mesh>
     </group>
   )
 })

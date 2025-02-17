@@ -1,41 +1,23 @@
 import React from 'react'
 import { useControls } from 'leva'
+import { useBox } from '@react-three/cannon'
 
-export const Floor = React.memo(() => {
-  const { position, scale, color, opacity } = useControls('Floor', {
-    position: {
-      value: [0, 0, 0],
-      step: 0.1,
+export function Floor(props) {
+  const [ref] = useBox(() => ({
+    type: 'Static',
+    args: [10, 0.1, 10],
+    position: [0, -0.1, 0],
+    material: {
+      friction: 0.5,
+      restitution: 0.3
     },
-    scale: {
-      value: 20,
-      min: 1,
-      max: 100,
-      step: 1,
-    },
-    color: {
-      value: '#808080',
-    },
-    opacity: {
-      value: 1,
-      min: 0,
-      max: 1,
-      step: 0.1,
-    },
-  })
+    ...props
+  }))
 
   return (
-    <mesh 
-      rotation-x={-Math.PI / 2} 
-      position={position} 
-      receiveShadow
-    >
-      <planeGeometry args={[scale, scale]} />
-      <meshStandardMaterial 
-        color={color} 
-        transparent
-        opacity={opacity}
-      />
+    <mesh ref={ref} receiveShadow>
+      <boxGeometry args={[10, 0.1, 10]} />
+      <meshStandardMaterial color="#808080" />
     </mesh>
   )
-}) 
+} 
