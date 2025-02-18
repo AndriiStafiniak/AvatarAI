@@ -24,6 +24,8 @@ import { LeftWall } from './components/LeftWall'
 import { RightWall } from './components/RightWall'
 import { BackWall } from './components/BackWall'
 import { Ceiling } from './components/Ceiling'
+import { Door } from './components/Door'
+import { Office } from './components/Office'
 const AVATAR_ID = 'fe2da934-6aa4-11ef-8fba-42010a7be011'
 
 // Optymalizacja ErrorBoundary z lepszą obsługą błędów
@@ -73,12 +75,13 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
         camera.lookAt(0, 1, 0)  // Celujemy na wysokości 1m (środek awatara)
       }}
     >
+      <OrbitControls />
       <Physics gravity={[0, -9.81, 0]}>
-        <FPVCamera 
+        {/* <FPVCamera 
           speed={5} 
           sensitivity={0.0020}
          
-        />
+        /> */}
         <Environment 
           preset="sunset" 
           background
@@ -133,6 +136,8 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
               <RightWall />
               <BackWall />
               <Ceiling />
+              <Door />
+              <Office />
             </group>
           </Suspense>
         {/* </PresentationControls> */}
