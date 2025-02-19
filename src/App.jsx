@@ -25,7 +25,7 @@ import { RightWall } from './components/RightWall'
 import { BackWall } from './components/BackWall'
 import { Ceiling } from './components/Ceiling'
 
-import Room  from './components/Room'
+
 const AVATAR_ID = 'fe2da934-6aa4-11ef-8fba-42010a7be011'
 
 // Optymalizacja ErrorBoundary z lepszą obsługą błędów
@@ -124,7 +124,7 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
               />
               <SceneObject currentAction={currentAction} />
               <Floor position={[0, -0.1, 0]} />
-              <Wall />
+              
               <Tv />
               <Zegar />
               <CoffeeTable />
@@ -135,8 +135,8 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
               <RightWall />
               <BackWall />
               <Ceiling />
-             
-              <Room position={[-10, 0, 0]} />
+              <Wall />
+        
             </group>
           </Suspense>
         {/* </PresentationControls> */}
