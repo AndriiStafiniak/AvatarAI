@@ -152,6 +152,38 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
                 initialSize={[100, 4, 1]}
                 initialColor="#909090"
               />
+              <Wall
+                name="Inside Left Wall"
+                initialPosition={[-15, 2, 0]}
+                initialSize={[0.5, 4, 20]}
+                initialColor="#c0c0c0"
+              />
+              <Wall
+                name="Inside Right Wall"
+                initialPosition={[15, 2, 0]}
+                initialSize={[0.5, 4, 20]}
+                initialColor="#c0c0c0"
+              />
+              <Wall
+                name="Inside Back Wall"
+                initialPosition={[0, 2, -15]}
+                initialSize={[20, 4, 0.5]}
+                initialColor="#c0c0c0"
+              />
+              <group position={[0, 0, 15]}>
+                <Wall
+                  name="Inside Front Wall Left"
+                  initialPosition={[-7.5, 2, 0]}
+                  initialSize={[5, 4, 0.5]}
+                  initialColor="#c0c0c0"
+                />
+                <Wall
+                  name="Inside Front Wall Right"
+                  initialPosition={[7.5, 2, 0]}
+                  initialSize={[5, 4, 0.5]}
+                  initialColor="#c0c0c0"
+                />
+              </group>
             </group>
           </Suspense>
         {/* </PresentationControls> */}
