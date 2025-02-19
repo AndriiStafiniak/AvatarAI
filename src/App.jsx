@@ -1,7 +1,7 @@
 import React, { Suspense, useState, Component, useCallback } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { Environment, PresentationControls, OrbitControls } from '@react-three/drei'
-import { Leva } from 'leva'
+import { Leva, useControls } from 'leva'
 import { ConvaiContext } from './contexts/ConvaiContext'
 import { LoadingSpinner } from './components/LoadingSpinner'
 // Importujemy komponenty bezpośrednio zamiast lazy loading
@@ -20,9 +20,6 @@ import { Rollup } from './components/Rollup'
 import { KeyboardControls } from '@react-three/drei'
 import { FPVCamera } from './components/FPVCamera'
 import { Physics } from '@react-three/cannon'
-import { LeftWall } from './components/LeftWall'
-import { RightWall } from './components/RightWall'
-import { BackWall } from './components/BackWall'
 import { Ceiling } from './components/Ceiling'
 
 
@@ -62,6 +59,18 @@ class Scene3DErrorBoundary extends Component {
 
 // Optymalizacja głównego komponentu sceny
 const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => {
+  const { floorPos, floorSize, floorColor } = useControls('Floor', {
+    floorPos: [0, 0.1, 0],
+    floorSize: [100, 0.1, 100],
+    floorColor: '#808080'
+  })
+
+  const { ceilingPos, ceilingSize, ceilingColor } = useControls('Ceiling', {
+    ceilingPos: [0, 3, 0],
+    ceilingSize: [100, 0.2, 100],
+    ceilingColor: '#d0d0d0'
+  })
+
   return (
     <Canvas 
       shadows 
@@ -131,12 +140,36 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
               <Vase/>
               <Chair />
               <Rollup />
-              <LeftWall />
-              <RightWall />
-              <BackWall />
-              <Ceiling />
-              <Wall />
-        
+              <Wall
+                position={floorPos}
+                args={floorSize}
+                color={floorColor}
+                collisionArgs={[100, 0.1, 100]}
+              />
+              <Wall
+                position={ceilingPos}
+                args={ceilingSize}
+                color={ceilingColor}
+                collisionArgs={[100, 0.2, 100]}
+              />
+              <Wall
+                position={[-50, 2, 0]}
+                args={[1, 4, 100]}
+                color="#a0a0a0"
+                rotation={[0, 0, 0]}
+              />
+              <Wall
+                position={[50, 2, 0]}
+                args={[1, 4, 100]}
+                color="#a0a0a0"
+                rotation={[0, 0, 0]}
+              />
+              <Wall
+                position={[0, 2, -50]}
+                args={[100, 4, 1]}
+                color="#a0a0a0"
+                rotation={[0, 0, 0]}
+              />
             </group>
           </Suspense>
         {/* </PresentationControls> */}
