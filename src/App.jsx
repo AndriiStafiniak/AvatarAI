@@ -72,12 +72,12 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
         camera.lookAt(0, 1, 0)  // Celujemy na wysokości 1m (środek awatara)
       }}
     >
-      <OrbitControls />
+      {/* <OrbitControls /> */}
       <Physics gravity={[0, -9.81, 0]}>
-        {/* <FPVCamera 
+        <FPVCamera 
           speed={5} 
           sensitivity={0.0020}
-        /> */}
+        />
         <Environment 
           preset="sunset" 
           background
@@ -255,7 +255,7 @@ const App = () => {
       top: 0,
       left: 0 
     }}>
-      <Leva hidden={false} />
+      <Leva hidden={true} />
       <ConvaiContext.Provider value={{ currentAction, setCurrentAction }}>
         <KeyboardControls
           map={[
