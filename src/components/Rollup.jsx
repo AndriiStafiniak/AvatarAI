@@ -6,7 +6,7 @@ import { useBox } from '@react-three/cannon'
 
 export const Rollup = React.memo(() => {
   // Kontrolki Leva dla rollupu z dziewczyną
-  const { position, rotation, scale } = useControls('Rollup with Girl', {
+  const { position, rotation, scale } = useControls('Rollup', {
     position: {
       value: [-2, 0, 0.7],
       step: 0.1,

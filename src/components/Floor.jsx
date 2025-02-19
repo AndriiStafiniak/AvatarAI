@@ -1,29 +1,19 @@
 import React from 'react'
-import { useControls } from 'leva'
 import { useBox } from '@react-three/cannon'
 
-export function Floor(props) {
-  const controls = useControls('Floor', {
-    position: { value: [0, 0.1, 0], label: 'Position' },
-    size: { value: [100, 0.1, 100], label: 'Size' },
-    color: { value: '#808080', label: 'Color' }
-  })
-
+export function Floor({ position = [0, -0.001, 0], args = [100, 0.001, 100], color = '#808080', ...props }) {
   const [ref] = useBox(() => ({
     type: 'Static',
-    args: [100, 0.1, 100],
-    position: controls.position,
-    material: {
-      friction: 0.5,
-      restitution: 0.3
-    },
+    args: args,
+    position: position,
+    material: { friction: 0.5 },
     ...props
   }))
 
   return (
     <mesh ref={ref} receiveShadow>
-      <boxGeometry args={controls.size} />
-      <meshStandardMaterial color={controls.color} />
+      <boxGeometry args={args} />
+      <meshStandardMaterial color={color} />
     </mesh>
   )
 } 

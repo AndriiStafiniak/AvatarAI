@@ -59,18 +59,6 @@ class Scene3DErrorBoundary extends Component {
 
 // Optymalizacja głównego komponentu sceny
 const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => {
-  const { floorPos, floorSize, floorColor } = useControls('Floor', {
-    floorPos: [0, 0.1, 0],
-    floorSize: [100, 0.1, 100],
-    floorColor: '#808080'
-  })
-
-  const { ceilingPos, ceilingSize, ceilingColor } = useControls('Ceiling', {
-    ceilingPos: [0, 3, 0],
-    ceilingSize: [100, 0.2, 100],
-    ceilingColor: '#d0d0d0'
-  })
-
   return (
     <Canvas 
       shadows 
@@ -84,12 +72,12 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
         camera.lookAt(0, 1, 0)  // Celujemy na wysokości 1m (środek awatara)
       }}
     >
-      {/* <OrbitControls /> */}
+      <OrbitControls />
       <Physics gravity={[0, -9.81, 0]}>
-        <FPVCamera 
+        {/* <FPVCamera 
           speed={5} 
           sensitivity={0.0020}
-        />
+        /> */}
         <Environment 
           preset="sunset" 
           background
@@ -132,8 +120,8 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
                 onLoad={onAvatarLoaded}
               />
               <SceneObject currentAction={currentAction} />
-              <Floor position={[0, -0.1, 0]} />
-              
+              <Floor />
+              <Ceiling />
               <Tv />
               <Zegar />
               <CoffeeTable />
@@ -141,34 +129,28 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
               <Chair />
               <Rollup />
               <Wall
-                position={floorPos}
-                args={floorSize}
-                color={floorColor}
-                collisionArgs={[100, 0.1, 100]}
+                name="Left Wall"
+                initialPosition={[-50, 2, 0]}
+                initialSize={[1, 4, 100]}
+                initialColor="#a0a0a0"
               />
               <Wall
-                position={ceilingPos}
-                args={ceilingSize}
-                color={ceilingColor}
-                collisionArgs={[100, 0.2, 100]}
+                name="Right Wall"
+                initialPosition={[50, 2, 0]}
+                initialSize={[1, 4, 100]}
+                initialColor="#a0a0a0"
               />
               <Wall
-                position={[-50, 2, 0]}
-                args={[1, 4, 100]}
-                color="#a0a0a0"
-                rotation={[0, 0, 0]}
+                name="Back Wall"
+                initialPosition={[0, 2, -50]}
+                initialSize={[100, 4, 1]}
+                initialColor="#a0a0a0"
               />
               <Wall
-                position={[50, 2, 0]}
-                args={[1, 4, 100]}
-                color="#a0a0a0"
-                rotation={[0, 0, 0]}
-              />
-              <Wall
-                position={[0, 2, -50]}
-                args={[100, 4, 1]}
-                color="#a0a0a0"
-                rotation={[0, 0, 0]}
+                name="Front Wall"
+                initialPosition={[0, 2, 50]}
+                initialSize={[100, 4, 1]}
+                initialColor="#909090"
               />
             </group>
           </Suspense>
@@ -190,7 +172,13 @@ const App = () => {
   }, [])
 
   return (
-    <div className="app-container">
+    <div className="app-container" style={{ 
+      height: '100vh',
+      width: '100vw',
+      position: 'fixed',
+      top: 0,
+      left: 0 
+    }}>
       <Leva hidden={false} />
       <ConvaiContext.Provider value={{ currentAction, setCurrentAction }}>
         <KeyboardControls
