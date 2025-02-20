@@ -63,6 +63,13 @@ export const FPVCamera = ({ speed = 5, sensitivity = 0.002 }) => {
   }, [camera, gl, sensitivity])
 
   useFrame((_, delta) => {
+    // Sprawdź czy pole tekstowe czatu jest aktywne
+    const chatInput = document.querySelector('.chat-input');
+    if (chatInput && document.activeElement === chatInput) {
+      api.velocity.set(0, velocity.current[1], 0); // Zatrzymaj ruch
+      return;
+    }
+
     targetRotation.current.y += (mouseOffset.current.x - targetRotation.current.y) * 0.1
     camera.rotation.y = targetRotation.current.y
     
