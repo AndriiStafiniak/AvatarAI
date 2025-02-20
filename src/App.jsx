@@ -73,12 +73,12 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
         camera.lookAt(0, 1, 0)  // Celujemy na wysokości 1m (środek awatara)
       }}
     >
-      <OrbitControls />
+      {/* <OrbitControls /> */}
       <Physics gravity={[0, -9.81, 0]}>
-        {/* <FPVCamera 
+        <FPVCamera 
           speed={5} 
           sensitivity={0.0020}
-        /> */}
+        />
         {/* <Environment 
           preset="night" 
           background
@@ -100,7 +100,7 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
           speed={1.5}
           zoom={1}
         > */}
-          <ambientLight intensity={0.5} color="#ffffff" />
+          <ambientLight intensity={0.8} color="#ffffff" />
           <directionalLight
             position={[10, 10, 10]}
             intensity={1}
@@ -163,32 +163,32 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
                 name="Inside Left Wall"
                 initialPosition={[-15, 2, 0]}
                 initialSize={[0.5, 4, 20]}
-                initialColor="#c0c0c0"
+                initialColor="#2d3843"
               />
               <Wall
                 name="Inside Right Wall"
                 initialPosition={[15, 2, 0]}
                 initialSize={[0.5, 4, 20]}
-                initialColor="#c0c0c0"
+                initialColor="#3a4b5c"
               />
               <Wall
                 name="Inside Back Wall"
                 initialPosition={[5, 2, -2.6]}
                 initialSize={[20, 4, 0.5]}
-                initialColor="#616161"
+                initialColor="#404040"
               />
               <group position={[0, 0, 15]}>
                 <Wall
                   name="Inside Front Wall Left"
                   initialPosition={[-7.5, 2, 0]}
                   initialSize={[5, 4, 0.5]}
-                  initialColor="#c0c0c0"
+                  initialColor="#34495e"
                 />
                 <Wall
                   name="Inside Front Wall Right"
                   initialPosition={[7.5, 2, 0]}
                   initialSize={[5, 4, 0.5]}
-                  initialColor="#c0c0c0"
+                  initialColor="#2c3e50"
                 />
               </group>
               <group position={[0, 0, -30]}>
@@ -196,13 +196,13 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
                   name="Partition Wall 1"
                   initialPosition={[-10, 2, 0]}
                   initialSize={[0.5, 4, 10]}
-                  initialColor="#d0d0d0"
+                  initialColor="#465362"
                 />
                 <Wall
                   name="Partition Wall 2"
                   initialPosition={[10, 2, 0]}
                   initialSize={[0.5, 4, 10]}
-                  initialColor="#d0d0d0"
+                  initialColor="#3d5467"
                 />
               </group>
               <group position={[25, 0, 20]}>
@@ -210,13 +210,13 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
                   name="Partition Wall 3 Left"
                   initialPosition={[-3, 2, 0]}
                   initialSize={[4, 4, 0.5]}
-                  initialColor="#e0e0e0"
+                  initialColor="#354052"
                 />
                 <Wall
                   name="Partition Wall 3 Right"
                   initialPosition={[3, 2, 0]}
                   initialSize={[4, 4, 0.5]}
-                  initialColor="#e0e0e0"
+                  initialColor="#2d3646"
                 />
               </group>
               <group position={[-20, 0, 25]}>
@@ -224,14 +224,14 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
                   name="Corner Partition 1"
                   initialPosition={[0, 2, 0]}
                   initialSize={[0.5, 4, 8]}
-                  initialColor="#b0b0b0"
+                  initialColor="#3a4556"
                   rotation={[0, Math.PI/4, 0]}
                 />
                 <Wall
                   name="Corner Partition 2"
                   initialPosition={[0, 2, 0]}
                   initialSize={[0.5, 4, 8]}
-                  initialColor="#b0b0b0"
+                  initialColor="#333d4d"
                   rotation={[0, -Math.PI/4, 0]}
                 />
               </group>

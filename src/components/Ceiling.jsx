@@ -36,7 +36,7 @@ function Ceiling() {
   }, [])
 
   return (
-    <group position={[0, 5, 0]} rotation={[Math.PI, 0, 0]}>
+    <group position={[0, 4, 0]} rotation={[Math.PI, 0, 0]}>
     
       
       {/* System oświetlenia */}
