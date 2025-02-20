@@ -1,18 +1,50 @@
-import { useBox } from '@react-three/cannon'
+import { useMemo } from 'react'
+import { Grid } from '@react-three/drei'
 
-export function Ceiling({ position = [0, 4, 0], args = [100, 0.2, 100], color = '#d0d0d0', ...props }) {
-  const [ref] = useBox(() => ({
-    type: 'Static',
-    args: args,
-    position: position,
-    material: { friction: 0.5 },
-    ...props
-  }))
+function Ceiling() {
+  // Prosta konfiguracja podstawowej siatki
+ 
+
+  // Generowanie świateł biurowych
+  const officeLights = useMemo(() => {
+    const lights = []
+    const spacing = 4 // Odstęp między lampami
+    const rows = 20
+    const cols = 20
+
+    for (let x = -cols/2; x <= cols/2; x++) {
+      for (let z = -rows/2; z <= rows/2; z++) {
+        lights.push(
+          <mesh 
+            key={`light-${x}-${z}`}
+            position={[x * spacing, 0.1, z * spacing]}
+            rotation={[-Math.PI + (Math.random()*0.1-0.05), 0, 0]}
+          >
+            <boxGeometry args={[3.5, 0.1, 1.2]} />
+            <meshStandardMaterial 
+              color="#ffffff"
+              emissive="#fff7e6"
+              emissiveIntensity={2}
+              metalness={0.1}
+              roughness={0.7}
+            />
+          </mesh>
+        )
+      }
+    }
+    return lights
+  }, [])
 
   return (
-    <mesh ref={ref} receiveShadow>
-      <boxGeometry args={args} />
-      <meshStandardMaterial color={color} />
-    </mesh>
+    <group position={[0, 5, 0]} rotation={[Math.PI, 0, 0]}>
+    
+      
+      {/* System oświetlenia */}
+      <group position={[0, -0.2, 0]}>
+        {officeLights}
+      </group>
+    </group>
   )
-} 
+}
+
+export default Ceiling

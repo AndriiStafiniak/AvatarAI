@@ -5,7 +5,7 @@ import { Leva, useControls } from 'leva'
 import { ConvaiContext } from './contexts/ConvaiContext'
 import { LoadingSpinner } from './components/LoadingSpinner'
 // Importujemy komponenty bezpośrednio zamiast lazy loading
-import { ConvaiAvatar } from './ConvaiAvatar'
+import { ConvaiAvatar, ConvaiAvatar2 } from './ConvaiAvatar'
 import { ChatInterface } from './components/ChatInterface'
 import { Floor } from './components/Floor'
 import { Wall } from './components/Wall'
@@ -20,7 +20,7 @@ import { Rollup } from './components/Rollup'
 import { KeyboardControls } from '@react-three/drei'
 import { FPVCamera } from './components/FPVCamera'
 import { Physics } from '@react-three/cannon'
-import { Ceiling } from './components/Ceiling'
+import  Ceiling from './components/Ceiling'
 
 
 const AVATAR_ID = 'fe2da934-6aa4-11ef-8fba-42010a7be011'
@@ -62,6 +62,7 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
   return (
     <Canvas 
       shadows 
+      style={{ background: '#474747' }}
       camera={{ 
         position: [0, 1.5, 3],  // X: 0, Y: 1.5m (wysokość osoby), Z: 3m od przodu
         fov: 75,                // Naturalne pole widzenia
@@ -72,21 +73,21 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
         camera.lookAt(0, 1, 0)  // Celujemy na wysokości 1m (środek awatara)
       }}
     >
-      {/* <OrbitControls /> */}
+      <OrbitControls />
       <Physics gravity={[0, -9.81, 0]}>
-        <FPVCamera 
+        {/* <FPVCamera 
           speed={5} 
           sensitivity={0.0020}
-        />
-        <Environment 
-          preset="sunset" 
+        /> */}
+        {/* <Environment 
+          preset="night" 
           background
           blur={0.5}
           frames={Infinity}
           resolution={256}
-          backgroundIntensity={0.5}
-          environmentIntensity={0.5}
-        />
+          backgroundIntensity={0.8}
+          environmentIntensity={0.8}
+        /> */}
         
         {/* <PresentationControls
           global
@@ -99,25 +100,31 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
           speed={1.5}
           zoom={1}
         > */}
-          <ambientLight intensity={0.7} />
+          <ambientLight intensity={0.5} color="#ffffff" />
           <directionalLight
-            position={[5, 5, 5]}
-            intensity={0.5}
+            position={[10, 10, 10]}
+            intensity={1}
             castShadow
-            shadow-mapSize={[1024, 1024]}
-            shadow-camera-far={25}
-            shadow-camera-near={0.1}
-            shadow-camera-top={10}
-            shadow-camera-bottom={-10}
-            shadow-camera-left={-10}
-            shadow-camera-right={10}
+            shadow-mapSize={[2048, 2048]}
+            shadow-camera-far={50}
+            shadow-camera-left={-20}
+            shadow-camera-right={20}
+            shadow-camera-top={20}
+            shadow-camera-bottom={-20}
           />
+          <pointLight position={[-10, 10, -10]} intensity={0.3} color="#ffccaa" />
           <Suspense fallback={null}>
             <group position={[0, -1, 0]}>
               <ConvaiAvatar 
                 castShadow 
                 receiveShadow 
                 onLoad={onAvatarLoaded}
+                position={[1.5, 0, 0]}
+              />
+              <ConvaiAvatar2 
+                castShadow 
+                receiveShadow 
+                position={[-1.5, 0, 0]}
               />
               <SceneObject currentAction={currentAction} />
               <Floor />
@@ -127,7 +134,7 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
               <CoffeeTable />
               <Vase/>
               <Chair />
-              <Rollup />
+              {/* <Rollup /> */}
               <Wall
                 name="Left Wall"
                 initialPosition={[-50, 2, 0]}

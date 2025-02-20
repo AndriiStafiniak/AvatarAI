@@ -7,6 +7,7 @@ import { useControls, folder } from 'leva'
 
 const API_KEY = '2d12bd421e3af7ce47223bce45944908'
 const AVATAR_ID = 'fe2da934-6aa4-11ef-8fba-42010a7be011'
+const AVATAR_ID_2 = '881e4aac-50d5-11ef-9461-42010a7be011'
 const CONVAI_API_URL = 'https://api.convai.com/character/get'
 
 function AvatarModel({ modelUrl, isPlaying, currentAction, onLoad, ...props }) {
@@ -161,8 +162,6 @@ function AvatarModel({ modelUrl, isPlaying, currentAction, onLoad, ...props }) {
       <primitive 
         object={clone} 
         {...props}
-        scale={[1, 1, 1]}
-        position={[0, 0, 0]}
       />
     </group>
   )
@@ -231,6 +230,54 @@ export function ConvaiAvatar({ onLoad, ...props }) {
         modelUrl={modelUrl}
         isPlaying={isTalking}
         currentAction={currentAction}
+        onLoad={onLoad}
+        {...props} 
+      />
+    </Suspense>
+  )
+}
+
+export function ConvaiAvatar2({ onLoad, ...props }) {
+  const [modelUrl, setModelUrl] = useState(null)
+  const [isTalking, setIsTalking] = useState(false)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    async function fetchCharacterData() {
+      try {
+        const response = await fetch(CONVAI_API_URL, {
+          method: 'POST',
+          headers: {
+            'CONVAI-API-KEY': API_KEY,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ charID: AVATAR_ID_2 })
+        })
+
+        if (!response.ok) throw new Error('Failed to fetch character')
+        
+        const data = await response.json()
+        if (data?.model_details?.modelLink) {
+          setModelUrl(data.model_details.modelLink)
+        } else {
+          throw new Error('Invalid model URL')
+        }
+      } catch (error) {
+        console.error('Error:', error)
+        setError(error)
+      }
+    }
+    fetchCharacterData()
+  }, [])
+
+  if (error) return null
+  if (!modelUrl) return null
+
+  return (
+    <Suspense>
+      <AvatarModel 
+        modelUrl={modelUrl}
+        isPlaying={isTalking}
         onLoad={onLoad}
         {...props} 
       />
