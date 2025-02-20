@@ -5,7 +5,7 @@ import { Leva, useControls } from 'leva'
 import { ConvaiContext } from './contexts/ConvaiContext'
 import { LoadingSpinner } from './components/LoadingSpinner'
 // Importujemy komponenty bezpośrednio zamiast lazy loading
-import { ConvaiAvatar, ConvaiAvatar2 } from './ConvaiAvatar'
+import { ConvaiAvatar, ConvaiAvatar2, ConvaiAvatar3, ConvaiAvatar4 } from './ConvaiAvatar'
 import { ChatInterface } from './components/ChatInterface'
 import { Floor } from './components/Floor'
 import { Wall } from './components/Wall'
@@ -139,6 +139,16 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
                 castShadow 
                 receiveShadow 
                 position={[-1.5, 0, 0]}
+              />
+              <ConvaiAvatar3 
+                castShadow 
+                receiveShadow 
+                position={[3.0, 0, 0]}
+              />
+              <ConvaiAvatar4 
+                castShadow 
+                receiveShadow 
+                position={[-3.0, 0, 0]}
               />
               <SceneObject currentAction={currentAction} />
               <Floor />
