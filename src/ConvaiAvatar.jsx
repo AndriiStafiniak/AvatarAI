@@ -22,7 +22,7 @@ function AvatarModel({ modelUrl, isPlaying, currentAction, onLoad, ...props }) {
       leftShoulderY: { value: -0.01, min: -1, max: 1, step: 0.01 },
       leftShoulderZ: { value: -0.64, min: -1, max: 1, step: 0.01 },
       
-      leftArmX: { value: 0.34, min: -1, max: 1, step: 0.01 },
+      leftArmX: { value: 0.40, min: -1, max: 1, step: 0.01 },
       leftArmY: { value: -0.01, min: -1, max: 1, step: 0.01 },
       leftArmZ: { value:0.03, min: -1, max: 1, step: 0.01 },
       
@@ -35,7 +35,7 @@ function AvatarModel({ modelUrl, isPlaying, currentAction, onLoad, ...props }) {
       rightShoulderY: { value: 0.10, min: -1, max: 1, step: 0.01 },
       rightShoulderZ: { value: 0.61, min: -1, max: 1, step: 0.01 },
       
-      rightArmX: { value: 0.32, min: -1, max: 1, step: 0.01 },
+      rightArmX: { value: 0.37, min: -1, max: 1, step: 0.01 },
       rightArmY: { value: 0, min: -1, max: 1, step: 0.01 },
       rightArmZ: { value: -0.15, min: -1, max: 1, step: 0.01 },
       

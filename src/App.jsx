@@ -21,6 +21,7 @@ import { KeyboardControls } from '@react-three/drei'
 import { FPVCamera } from './components/FPVCamera'
 import { Physics } from '@react-three/cannon'
 import  Ceiling from './components/Ceiling'
+import { useCylinder } from '@react-three/cannon'
 
 
 const AVATAR_ID = 'fe2da934-6aa4-11ef-8fba-42010a7be011'
@@ -55,6 +56,26 @@ class Scene3DErrorBoundary extends Component {
     }
     return this.props.children
   }
+}
+
+// Nowy komponent opakowujący awatar z fizyką
+const AvatarWithPhysics = ({ children, onLoad, position, rotation }) => {
+  const [ref] = useCylinder(() => ({
+    mass: 0, // Mass 0 = obiekt statyczny
+    position,
+    rotation,
+    args: [0.3, 0.3, 1.8, 16], // [radiusTop, radiusBottom, height, numSegments]
+    material: {
+      friction: 0.1,
+      restitution: 0.2,
+    },
+  }))
+
+  return (
+    <group ref={ref} position={position} rotation={rotation}>
+      {React.cloneElement(children, { onLoad })}
+    </group>
+  )
 }
 
 // Optymalizacja głównego komponentu sceny
@@ -129,27 +150,34 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
           <pointLight position={[-10, 10, -10]} intensity={0.3} color="#ffccaa" />
           <Suspense fallback={null}>
             <group position={[0, -1, 0]}>
-              <ConvaiAvatar 
-                castShadow 
-                receiveShadow 
+              <AvatarWithPhysics 
+                position={[10, 0, 4]}
+                rotation={[0, -Math.PI * 0.4, 0]}
                 onLoad={onAvatarLoaded}
-                position={[1.5, 0, 0]}
-              />
-              <ConvaiAvatar2 
-                castShadow 
-                receiveShadow 
-                position={[-1.5, 0, 0]}
-              />
-              <ConvaiAvatar3 
-                castShadow 
-                receiveShadow 
-                position={[3.0, 0, 0]}
-              />
-              <ConvaiAvatar4 
-                castShadow 
-                receiveShadow 
-                position={[-3.0, 0, 0]}
-              />
+              >
+                <ConvaiAvatar castShadow receiveShadow />
+              </AvatarWithPhysics>
+
+              <AvatarWithPhysics 
+                position={[0, 0, 0]}
+                rotation={[0, Math.PI * 0, 0]}
+              >
+                <ConvaiAvatar2 castShadow receiveShadow />
+              </AvatarWithPhysics>
+
+              <AvatarWithPhysics 
+                position={[3.0, 0, 2]}
+                rotation={[0, -Math.PI/4, 0]}
+              >
+                <ConvaiAvatar3 castShadow receiveShadow />
+              </AvatarWithPhysics>
+
+              <AvatarWithPhysics 
+                position={[-10.0, 0, 8]}
+                rotation={[0, Math.PI * 0.2, 0]}
+              >
+                <ConvaiAvatar4 castShadow receiveShadow />
+              </AvatarWithPhysics>
               <SceneObject currentAction={currentAction} />
               <Floor />
               <Ceiling />
@@ -278,7 +306,7 @@ const App = () => {
       top: 0,
       left: 0 
     }}>
-      <Leva hidden={true} />
+      <Leva hidden={false} />
       <ConvaiContext.Provider value={{ currentAction, setCurrentAction }}>
         <KeyboardControls
           map={[
