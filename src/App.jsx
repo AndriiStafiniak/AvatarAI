@@ -59,6 +59,20 @@ class Scene3DErrorBoundary extends Component {
 
 // Optymalizacja głównego komponentu sceny
 const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => {
+  // Stały układ losowy wygenerowany raz na zawsze
+  const initialPositions = {
+    insideLeft: [-15.2, 2, 8.7],
+    insideRight: [18.9, 2, -5.3],
+    frontLeft: [-7.5, 2, 22.4],
+    frontRight: [9.1, 2, 18.6],
+    partition1: [-28.5, 2, -15.8],
+    partition2: [32.1, 2, -25.3],
+    partition3Left: [19.7, 2, 24.9],
+    partition3Right: [30.4, 2, 17.2],
+    corner1: [-22.3, 2, 19.8],
+    corner2: [-18.6, 2, 27.4]
+  };
+
   return (
     <Canvas 
       shadows 
@@ -161,15 +175,65 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
               />
               <Wall
                 name="Inside Left Wall"
-                initialPosition={[-15, 2, 0]}
+                initialPosition={initialPositions.insideLeft}
                 initialSize={[0.5, 4, 20]}
                 initialColor="#2d3843"
               />
               <Wall
                 name="Inside Right Wall"
-                initialPosition={[15, 2, 0]}
+                initialPosition={initialPositions.insideRight}
                 initialSize={[0.5, 4, 20]}
                 initialColor="#3a4b5c"
+              />
+              <Wall
+                name="Inside Front Wall Left"
+                initialPosition={initialPositions.frontLeft}
+                initialSize={[5, 4, 0.5]}
+                initialColor="#34495e"
+              />
+              <Wall
+                name="Inside Front Wall Right"
+                initialPosition={initialPositions.frontRight}
+                initialSize={[5, 4, 0.5]}
+                initialColor="#2c3e50"
+              />
+              <Wall
+                name="Partition Wall 1"
+                initialPosition={initialPositions.partition1}
+                initialSize={[0.5, 4, 10]}
+                initialColor="#465362"
+              />
+              <Wall
+                name="Partition Wall 2"
+                initialPosition={initialPositions.partition2}
+                initialSize={[0.5, 4, 10]}
+                initialColor="#3d5467"
+              />
+              <Wall
+                name="Partition Wall 3 Left"
+                initialPosition={initialPositions.partition3Left}
+                initialSize={[4, 4, 0.5]}
+                initialColor="#354052"
+              />
+              <Wall
+                name="Partition Wall 3 Right"
+                initialPosition={initialPositions.partition3Right}
+                initialSize={[4, 4, 0.5]}
+                initialColor="#2d3646"
+              />
+              <Wall
+                name="Corner Partition 1"
+                initialPosition={initialPositions.corner1}
+                initialSize={[0.5, 4, 8]}
+                initialColor="#3a4556"
+                rotation={[0, Math.PI/4, 0]}
+              />
+              <Wall
+                name="Corner Partition 2"
+                initialPosition={initialPositions.corner2}
+                initialSize={[0.5, 4, 8]}
+                initialColor="#333d4d"
+                rotation={[0, -Math.PI/4, 0]}
               />
               <Wall
                 name="Inside Back Wall"
@@ -177,64 +241,6 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
                 initialSize={[20, 4, 0.5]}
                 initialColor="#404040"
               />
-              <group position={[0, 0, 15]}>
-                <Wall
-                  name="Inside Front Wall Left"
-                  initialPosition={[-7.5, 2, 0]}
-                  initialSize={[5, 4, 0.5]}
-                  initialColor="#34495e"
-                />
-                <Wall
-                  name="Inside Front Wall Right"
-                  initialPosition={[7.5, 2, 0]}
-                  initialSize={[5, 4, 0.5]}
-                  initialColor="#2c3e50"
-                />
-              </group>
-              <group position={[0, 0, -30]}>
-                <Wall
-                  name="Partition Wall 1"
-                  initialPosition={[-10, 2, 0]}
-                  initialSize={[0.5, 4, 10]}
-                  initialColor="#465362"
-                />
-                <Wall
-                  name="Partition Wall 2"
-                  initialPosition={[10, 2, 0]}
-                  initialSize={[0.5, 4, 10]}
-                  initialColor="#3d5467"
-                />
-              </group>
-              <group position={[25, 0, 20]}>
-                <Wall
-                  name="Partition Wall 3 Left"
-                  initialPosition={[-3, 2, 0]}
-                  initialSize={[4, 4, 0.5]}
-                  initialColor="#354052"
-                />
-                <Wall
-                  name="Partition Wall 3 Right"
-                  initialPosition={[3, 2, 0]}
-                  initialSize={[4, 4, 0.5]}
-                  initialColor="#2d3646"
-                />
-              </group>
-              <group position={[-20, 0, 25]}>
-                <Wall
-                  name="Corner Partition 1"
-                  initialPosition={[0, 2, 0]}
-                  initialSize={[0.5, 4, 8]}
-                  initialColor="#3a4556"
-                  rotation={[0, Math.PI/4, 0]}
-                />
-                <Wall
-                  name="Corner Partition 2"
-                  initialPosition={[0, 2, 0]}
-                  initialSize={[0.5, 4, 8]}
-                  initialColor="#333d4d"
-                  rotation={[0, -Math.PI/4, 0]}
-                />
-              </group>
             </group>
           </Suspense>
         {/* </PresentationControls> */}
