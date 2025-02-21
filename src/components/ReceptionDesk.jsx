@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import { useGLTF } from '@react-three/drei'
 import { SkeletonUtils } from 'three-stdlib'
 
-export const SceneObject = React.memo(({ currentAction }) => {
+export const ReceptionDesk = React.memo(({ currentAction, position, rotation, scale }) => {
   const { scene: gltfScene } = useGLTF('./models/resize_reception.glb', {
     draco: true,
     meshOptimizer: true
@@ -11,12 +11,10 @@ export const SceneObject = React.memo(({ currentAction }) => {
   const clone = useMemo(() => SkeletonUtils.clone(gltfScene), [gltfScene])
 
   return (
-    <group>
+    <group position={position} rotation={rotation} scale={scale}>
       <primitive 
         object={clone} 
         position={[0, 0, 0.7]}
-        scale={1.1}
-        rotation={[0, Math.PI * 2, 0]}
       />
     </group>
   )

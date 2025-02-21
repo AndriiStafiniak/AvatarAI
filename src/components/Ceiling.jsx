@@ -8,9 +8,9 @@ function Ceiling() {
   // Generowanie świateł biurowych
   const officeLights = useMemo(() => {
     const lights = []
-    const spacing = 4 // Odstęp między lampami
-    const rows = 20
-    const cols = 20
+    const spacing = 10 // Odstęp między lampami
+    const rows = 12
+    const cols = 12
 
     for (let x = -cols/2; x <= cols/2; x++) {
       for (let z = -rows/2; z <= rows/2; z++) {

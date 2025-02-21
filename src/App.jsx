@@ -11,7 +11,7 @@ import { Floor } from './components/Floor'
 import { Wall } from './components/Wall'
 import { Tv } from './components/Tv'
 import { Zegar } from './components/Zegar'
-import { SceneObject } from './components/SceneObject'
+import { ReceptionDesk } from './components/ReceptionDesk'
 import { Vase } from './components/Vase'
 import './App.css'
 import { Chair } from './components/Chair'
@@ -151,34 +151,57 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
           <Suspense fallback={null}>
             <group position={[0, -1, 0]}>
               <AvatarWithPhysics 
-                position={[10, 0, 4]}
-                rotation={[0, -Math.PI * 0.4, 0]}
+                position={[0, 0, 0]}
+                rotation={[0, -Math.PI * 0, 0]}
                 onLoad={onAvatarLoaded}
               >
                 <ConvaiAvatar castShadow receiveShadow />
               </AvatarWithPhysics>
 
               <AvatarWithPhysics 
-                position={[0, 0, 0]}
-                rotation={[0, Math.PI * 0, 0]}
+                position={[-14, 0, 9]}
+                rotation={[0, Math.PI * 0.5, 0]}
               >
                 <ConvaiAvatar2 castShadow receiveShadow />
               </AvatarWithPhysics>
 
               <AvatarWithPhysics 
-                position={[3.0, 0, 2]}
-                rotation={[0, -Math.PI/4, 0]}
+                position={[-8, 0, 21]}
+                rotation={[0, -Math.PI, 0]}
               >
                 <ConvaiAvatar3 castShadow receiveShadow />
               </AvatarWithPhysics>
 
               <AvatarWithPhysics 
-                position={[-10.0, 0, 8]}
-                rotation={[0, Math.PI * 0.2, 0]}
+                position={[8, 0, 17]}
+                rotation={[0, Math.PI, 0]}
               >
                 <ConvaiAvatar4 castShadow receiveShadow />
               </AvatarWithPhysics>
-              <SceneObject currentAction={currentAction} />
+              <ReceptionDesk
+                currentAction={currentAction}
+                position={[0, 0, 0]}
+                rotation={[0, Math.PI * 0, 0]}
+                scale={1.1}
+              />
+              <ReceptionDesk
+                currentAction={currentAction}
+                position={[-14, 0, 9]}
+                rotation={[0, Math.PI * 0.5, 0]}
+                scale={1.1}
+              />
+              <ReceptionDesk
+                currentAction={currentAction}
+                position={[-8, 0, 21]}
+                rotation={[0, -Math.PI, 0]}
+                scale={1.1}
+              />
+              <ReceptionDesk
+                currentAction={currentAction}
+                position={[8, 0, 17]}
+                rotation={[0, Math.PI, 0]}
+                scale={1.1}
+              />
               <Floor />
               <Ceiling />
               <Tv />
