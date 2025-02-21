@@ -1,19 +1,30 @@
 import React from 'react'
-import { useBox } from '@react-three/cannon'
+import { Plane } from '@react-three/drei'
+import { usePlane } from '@react-three/cannon'
 
-export function Floor({ position = [0, -0.001, 0], args = [100, 0.001, 100], color = '#808080', ...props }) {
-  const [ref] = useBox(() => ({
+export const Floor = () => {
+  const [ref] = usePlane(() => ({
     type: 'Static',
-    args: args,
-    position: position,
-    material: { friction: 0.5 },
-    ...props
+    rotation: [-Math.PI / 2, 0, 0],  // Obrót poziomy
+    position: [2.5, 0, 2],           // Pozycja zgodna z wizualną podłogą
+    material: {
+      friction: 0.5,
+      restitution: 0.2
+    }
   }))
 
   return (
-    <mesh ref={ref} receiveShadow>
-      <boxGeometry args={args} />
-      <meshStandardMaterial color={color} />
-    </mesh>
+    <Plane
+      args={[50, 50]}
+      rotation={[-Math.PI / 2, 0, 0]}
+      position={[2.5, 0, 2]}
+      receiveShadow
+    >
+      <meshStandardMaterial 
+        color="#4a4a4a"
+        metalness={0.1}
+        roughness={0.6}
+      />
+    </Plane>
   )
 } 

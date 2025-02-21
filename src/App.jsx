@@ -82,16 +82,16 @@ const AvatarWithPhysics = ({ children, onLoad, position, rotation }) => {
 const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => {
   // Stały układ losowy wygenerowany raz na zawsze
   const initialPositions = {
-    insideLeft: [-15.2, 2, 8.7],
-    insideRight: [18.9, 2, -5.3],
-    frontLeft: [-7.5, 2, 22.4],
-    frontRight: [9.1, 2, 18.6],
-    partition1: [-28.5, 2, -15.8],
-    partition2: [32.1, 2, -25.3],
-    partition3Left: [19.7, 2, 24.9],
-    partition3Right: [30.4, 2, 17.2],
-    corner1: [-22.3, 2, 19.8],
-    corner2: [-18.6, 2, 27.4]
+    insideLeft: [-10.2, 2, 8.7],
+    insideRight: [12.9, 2, -5.3],
+    frontLeft: [-7.5, 2, 9],
+    frontRight: [9.1, 2, 7],
+    partition1: [-8.5, 2, -11],
+    partition2: [3.1, 2, 12],
+    partition3Left: [19.7, 2, 10],
+    partition3Right: [3.4, 2,12],
+    corner1: [-2.3, 2, 19.8],
+    corner2: [-12.6, 2, 19.4]
   };
 
   return (
@@ -212,26 +212,26 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
               {/* <Rollup /> */}
               <Wall
                 name="Left Wall"
-                initialPosition={[-50, 2, 0]}
-                initialSize={[1, 4, 100]}
+                initialPosition={[-22.5, 2, 2]}
+                initialSize={[1, 4, 50]}
                 initialColor="#a0a0a0"
               />
               <Wall
                 name="Right Wall"
-                initialPosition={[50, 2, 0]}
-                initialSize={[1, 4, 100]}
+                initialPosition={[27.5, 2, 2]}
+                initialSize={[1, 4, 50]}
                 initialColor="#a0a0a0"
               />
               <Wall
                 name="Back Wall"
-                initialPosition={[0, 2, -50]}
-                initialSize={[100, 4, 1]}
+                initialPosition={[2.5, 2, -23]}
+                initialSize={[50, 4, 1]}
                 initialColor="#a0a0a0"
               />
               <Wall
                 name="Front Wall"
-                initialPosition={[0, 2, 50]}
-                initialSize={[100, 4, 1]}
+                initialPosition={[2.5, 2, 27]}
+                initialSize={[50, 4, 1]}
                 initialColor="#909090"
               />
               <Wall
@@ -294,7 +294,7 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
                 initialPosition={initialPositions.corner2}
                 initialSize={[0.5, 4, 8]}
                 initialColor="#333d4d"
-                rotation={[0, -Math.PI/4, 0]}
+                rotation={[0, -Math.PI, 0]}
               />
               <Wall
                 name="Inside Back Wall"
