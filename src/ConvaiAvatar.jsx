@@ -114,7 +114,7 @@ function AvatarModel({ modelUrl, isPlaying, currentAction, onLoad, ...props }) {
   useEffect(() => {
     const fbxLoader = new FBXLoader()
     fbxLoader.load(
-      '/animation/avatarIdle.fbx',
+      '/animation/avatar.fbx',
       (fbx) => {
         if (fbx.animations && fbx.animations.length > 0) {
           setTalkingAnimation(fbx.animations[0])

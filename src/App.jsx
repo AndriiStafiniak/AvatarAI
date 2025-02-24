@@ -82,22 +82,22 @@ const AvatarWithPhysics = ({ children, onLoad, position, rotation }) => {
 const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => {
   // Stały układ losowy wygenerowany raz na zawsze
   const initialPositions = {
-    insideLeft: [-10.2, 2, 8.7],
+    insideLeft: [-18.2, 2, 8.7],
     insideRight: [12.9, 2, -5.3],
-    frontLeft: [-7.5, 2, 9],
-    frontRight: [9.1, 2, 7],
-    partition1: [-8.5, 2, -11],
+    frontLeft: [-3, 2, 9],
+    frontRight: [25, 2, -13],
+    partition1: [-10, 2, -11],
     partition2: [3.1, 2, 12],
     partition3Left: [19.7, 2, 10],
     partition3Right: [3.4, 2,12],
-    corner1: [-2.3, 2, 19.8],
+    corner1: [18, 2, 19.8],
     corner2: [-12.6, 2, 19.4]
   };
 
   return (
     <Canvas 
       shadows 
-      style={{ background: '#474747' }}
+      style={{ background: '#646464' }}
       camera={{ 
         position: [0, 1.5, 3],  // X: 0, Y: 1.5m (wysokość osoby), Z: 3m od przodu
         fov: 75,                // Naturalne pole widzenia
@@ -114,15 +114,14 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
           speed={5} 
           sensitivity={0.0020}
         />
-        {/* <Environment 
-          preset="night" 
+        <Environment 
+          preset="night"
           background
           blur={0.5}
-          frames={Infinity}
-          resolution={256}
-          backgroundIntensity={0.8}
+          resolution={512}
+          backgroundIntensity={0.6}
           environmentIntensity={0.8}
-        /> */}
+        />
         
         {/* <PresentationControls
           global
@@ -135,19 +134,29 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
           speed={1.5}
           zoom={1}
         > */}
-          <ambientLight intensity={0.8} color="#ffffff" />
+          <ambientLight intensity={1.2} color="#ffffff" />
           <directionalLight
-            position={[10, 10, 10]}
-            intensity={1}
+            position={[15, 15, 15]}
+            intensity={1.5}
             castShadow
-            shadow-mapSize={[2048, 2048]}
-            shadow-camera-far={50}
-            shadow-camera-left={-20}
-            shadow-camera-right={20}
-            shadow-camera-top={20}
-            shadow-camera-bottom={-20}
+            shadow-mapSize={[4096, 4096]}
+            shadow-camera-far={100}
+            shadow-camera-left={-30}
+            shadow-camera-right={30}
+            shadow-camera-top={30}
+            shadow-camera-bottom={-30}
           />
-          <pointLight position={[-10, 10, -10]} intensity={0.3} color="#ffccaa" />
+          <pointLight 
+            position={[-15, 10, -15]} 
+            intensity={0.8} 
+            color="#ffeedd"
+            decay={0.5}
+          />
+          <hemisphereLight
+            intensity={0.3}
+            color="#ffffff"
+            groundColor="#404040"
+          />
           <Suspense fallback={null}>
             <group position={[0, -1, 0]}>
               <AvatarWithPhysics 
@@ -238,7 +247,7 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
                 name="Inside Left Wall"
                 initialPosition={initialPositions.insideLeft}
                 initialSize={[0.5, 4, 20]}
-                initialColor="#2d3843"
+                initialColor="#ffffff"
               />
               <Wall
                 name="Inside Right Wall"
@@ -250,7 +259,7 @@ const Scene = React.memo(({ isAvatarLoaded, onAvatarLoaded, currentAction }) => 
                 name="Inside Front Wall Left"
                 initialPosition={initialPositions.frontLeft}
                 initialSize={[5, 4, 0.5]}
-                initialColor="#34495e"
+                initialColor="#ffffff"
               />
               <Wall
                 name="Inside Front Wall Right"
