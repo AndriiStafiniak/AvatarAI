@@ -2,7 +2,7 @@
 
 [![AvatarAI](./readme_img.png)](https://avatar-ai-gray.vercel.app/)
 
-[Live Demo](https://avatar-ai-gray.vercel.app/)
+[Live Demo](https://avatar-ai-ge.vercel.app/)
 
 ## About
 
